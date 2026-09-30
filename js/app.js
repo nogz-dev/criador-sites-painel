@@ -191,7 +191,7 @@ async function saveFile(name,data,okMsg){
     catch(e){if(e&&e.code==='declined')return true;if(e&&e.code==='rate_limited'){toast('Já existe um download aberto. Aguarde um instante.');return true}}
   }
   try{const blob=data instanceof Blob?data:new Blob([data],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
-    toast('Se o download não começar, use "Ver ou copiar o código".');return true}catch(e){return false}
+    toast('Se o download não começar, verifique os bloqueios do seu navegador.');return true}catch(e){return false}
 }
 function b64(dataUrl){return dataUrl.split(',')[1]}
 function readme(d){
@@ -254,7 +254,6 @@ function updateCode(){
   dlg.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===codeMode)));
 }
 dlg.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{codeMode=b.dataset.m;updateCode()});
-document.getElementById('bCode').onclick=()=>openCode('sqs');
 
 /* ---------- portão do download ----------
    O código é feito para o Squarespace. Quem ainda não tem conta vai pelo link do
@@ -350,7 +349,7 @@ pForm.addEventListener('submit',async e=>{
 
 pago.addEventListener('click',e=>{if(e.target===pago)pago.close()});
 
-['bDownload','bPreview','bCode'].forEach(id=>{
+['bDownload','bPreview'].forEach(id=>{
   const el=document.getElementById(id);
   if(!el)return;
   const original=el.onclick;
