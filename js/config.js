@@ -16,6 +16,11 @@
 const CONFIG = {
   leadWebhook: 'https://adm.paineldkc.com/webhook/site?token=sg-61977226b7bbe4c65bf040050acaf036',
 
+  /* liberarWebhook: o painel responde se a pessoa já tem conta no Squarespace,
+     e devolve o link de compra do afiliado que a trouxe. Vazio ('') desliga o
+     portão e o download fica livre. */
+  liberarWebhook: 'https://adm.paineldkc.com/webhook/site/liberar?token=sg-61977226b7bbe4c65bf040050acaf036',
+
   /* gratisAte: data e hora REAIS em que a criação gratuita termina, no formato
      'AAAA-MM-DDTHH:MM:SS-03:00' (horário de Brasília). Com data preenchida, a faixa
      do topo mostra o cronômetro; vazio ou data passada, o cronômetro some. */

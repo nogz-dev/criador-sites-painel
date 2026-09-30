@@ -306,6 +306,31 @@
   </div>
 </dialog>
 
+<dialog id="pago">
+  <div class="welcome">
+    <span class="badge">Seu site está pronto</span>
+    <h2>Falta o endereço do seu site</h2>
+    <p>Para publicar esse site, você precisa de um <strong>domínio</strong> e uma
+       <strong>hospedagem</strong>. É o que deixa ele no ar com o nome da sua empresa,
+       tipo <em>suaempresa.com.br</em>.</p>
+
+    <div class="have"><strong>Adquira agora na Squarespace com 36% OFF</strong>
+      Domínio e hospedagem no mesmo lugar, e o código que você vai baixar já vem pronto para colar lá.</div>
+    <button class="big" type="button" id="pComprar">Assinar a Squarespace com 36% OFF</button>
+
+    <div class="pago-ou"><span>ou</span></div>
+
+    <form id="pForm" novalidate>
+      <label class="f" id="pCampo"><span>Já sou assinante — meu e-mail da Squarespace</span>
+        <input type="email" name="pemail" autocomplete="email" inputmode="email"
+               placeholder="voce@email.com" spellcheck="false">
+        <div class="err" id="pErr">Digite o e-mail da sua conta Squarespace.</div></label>
+      <button class="ghost" type="submit" id="pVerificar">Liberar meu download</button>
+    </form>
+    <p class="gate-note" id="pNota">Use o mesmo e-mail com que você criou a conta no Squarespace.</p>
+  </div>
+</dialog>
+
 <dialog id="dlg">
   <div class="dlg-h"><h3>Código do site</h3><button class="x" type="button" id="dlgClose" aria-label="Fechar">×</button></div>
   <div class="dlg-b">

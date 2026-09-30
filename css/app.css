@@ -249,3 +249,17 @@ dialog::backdrop{background:rgba(12,14,22,.55);backdrop-filter:blur(3px)}
 }
 @media (max-width:420px){#bHelp{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+
+/* ---------- portão do download: comprar no Squarespace ou comprovar a conta ---------- */
+#pago .pago-ou{display:flex;align-items:center;gap:14px;margin:22px 0 18px;
+  color:#8b93a7;font-size:13px}
+#pago .pago-ou::before,#pago .pago-ou::after{content:'';flex:1;height:1px;background:#e3e7ef}
+#pago form{margin:0}
+#pago .f{display:block;margin-bottom:14px}
+#pago .err{display:none}
+#pago .f.bad .err{display:block}
+#pago #pNota{margin-top:14px}
+#pago .pago-msg{margin-top:14px;padding:13px 15px;border-radius:10px;font-size:14px;line-height:1.55;display:none}
+#pago .pago-msg.erro{display:block;background:#fdf0ee;border:1px solid #f3cfc8;color:#a4453a}
+#pago .pago-msg.ok{display:block;background:#eef8f1;border:1px solid #cbe8d5;color:#2f6b45}

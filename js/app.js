@@ -255,6 +255,113 @@ function updateCode(){
 }
 dlg.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{codeMode=b.dataset.m;updateCode()});
 document.getElementById('bCode').onclick=()=>openCode('sqs');
+
+/* ---------- portão do download ----------
+   O código é feito para o Squarespace. Quem ainda não tem conta vai pelo link do
+   afiliado que trouxe a pessoa; quem já tem comprova com o e-mail da conta.
+   Teste grátis também libera: a pessoa já criou a conta pelo link.
+   Com CONFIG.liberarWebhook vazio, o portão não existe e o download fica livre. */
+const PAGO_KEY='csp-pago';
+/* Guarda ate' quando vale a liberacao. Clique na oferta vale 24h — tempo de sobra
+   para a venda chegar no painel, sem travar quem acabou de assinar. E-mail
+   comprovado nao expira. */
+function jaLiberado(){
+  try{
+    const v=localStorage.getItem(PAGO_KEY);
+    if(!v)return false;
+    if(v==='1'||v==='sempre')return true;
+    return Number(v)>Date.now();
+  }catch(e){return false}
+}
+function marcarLiberado(horas){
+  try{localStorage.setItem(PAGO_KEY, horas?String(Date.now()+horas*3600000):'sempre')}catch(e){}
+}
+
+const pago=document.getElementById('pago');
+const pForm=document.getElementById('pForm');
+const pCampo=document.getElementById('pCampo');
+const pVerificar=document.getElementById('pVerificar');
+let linkCompra='';          /* '' = ainda nao perguntei; null = nao ha oferta */
+
+function pMsg(texto,tipo){
+  let el=document.getElementById('pMsg');
+  if(!el){el=document.createElement('div');el.id='pMsg';el.className='pago-msg';
+    pForm.parentNode.insertBefore(el,document.getElementById('pNota'))}
+  el.textContent=texto||'';
+  el.className='pago-msg'+(texto?' '+(tipo||'erro'):'');
+}
+
+async function perguntarPainel(email,modo){
+  const l=getLead();
+  const r=await fetch(CONFIG.liberarWebhook,{method:'POST',
+    headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({email:email||'',lead:l?l.email:'',ref:quemIndicou(),modo:modo||''})});
+  return await r.json();
+}
+
+/* Se o painel nao tem oferta de Squarespace para mostrar, nao existe portao:
+   melhor liberar o download do que exibir uma oferta que nao leva a lugar nenhum. */
+async function abrirPortao(depois){
+  if(linkCompra===''){
+    try{const r=await perguntarPainel('');linkCompra=(r&&r.link)||null}catch(e){linkCompra=null}
+  }
+  if(!linkCompra){ marcarLiberado(24); if(depois)depois(); return }
+  pMsg('');pCampo.classList.remove('bad');
+  if(!pago.open)pago.showModal();
+}
+
+document.getElementById('pComprar').onclick=async()=>{
+  if(!linkCompra){pMsg('Não conseguimos abrir o link agora. Tente de novo em instantes.','erro');return}
+  window.open(linkCompra,'_blank','noopener');
+  /* quem clicou ja' passou pelo link: libera na hora. A venda demora para chegar
+     no painel, e travar aqui seria travar justamente quem acabou de assinar. */
+  try{
+    const r=await perguntarPainel('','clique');
+    marcarLiberado((r&&r.horas)||24);
+  }catch(e){ marcarLiberado(24); }
+  pMsg('Pronto. Assine por lá e volte aqui — o seu download já está liberado.','ok');
+  setTimeout(()=>{if(pago.open)pago.close()},2200);
+};
+
+pForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=(pForm.pemail.value||'').trim();
+  const valido=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  pCampo.classList.toggle('bad',!valido);
+  if(!valido){pForm.pemail.focus();return}
+  pMsg('');pVerificar.disabled=true;pVerificar.textContent='Conferindo…';
+  try{
+    const r=await perguntarPainel(email);
+    if(r&&r.liberado){
+      marcarLiberado(0);
+      pMsg('Conta encontrada. Pode baixar o seu site.','ok');
+      setTimeout(()=>{pago.close();document.getElementById('bDownload').click()},900);
+    }else if(r&&r.espere){
+      pMsg('Muitas tentativas seguidas. Espere alguns minutos e tente de novo.','erro');
+    }else{
+      pMsg('Não encontramos uma conta do Squarespace com esse e-mail. '+
+           'Confira se digitou o mesmo e-mail da conta, ou crie a sua conta no botão acima.','erro');
+    }
+  }catch(e){
+    pMsg('Não conseguimos conferir agora. Tente de novo em instantes.','erro');
+  }
+  pVerificar.disabled=false;pVerificar.textContent='Liberar meu download';
+});
+
+pago.addEventListener('click',e=>{if(e.target===pago)pago.close()});
+
+['bDownload','bPreview','bCode'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  const original=el.onclick;
+  el.onclick=function(ev){
+    if(CONFIG.liberarWebhook&&!jaLiberado()){
+      abrirPortao(function(){original.call(el,ev)});
+      return;
+    }
+    return original.call(el,ev);
+  };
+});
 document.getElementById('dlgClose').onclick=()=>dlg.close();
 document.getElementById('bCopy').onclick=async()=>{
   const ta=document.getElementById('code');
