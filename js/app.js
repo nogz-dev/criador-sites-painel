@@ -276,10 +276,22 @@ f.addEventListener('change',e=>{if(e.target.type!=='file')render()});
 /* ---------- cadastro antes de começar ---------- */
 const LEAD_KEY='dk-criador-lead';
 function getLead(){try{return JSON.parse(localStorage.getItem(LEAD_KEY)||'null')}catch(e){return null}}
+/* quem indicou: ?af=SUBID1 na URL. Guardado no navegador para o contato continuar
+   amarrado ao afiliado mesmo que a pessoa feche e volte depois por outro caminho. */
+const REF_KEY='csp-ref';
+function quemIndicou(){
+  try{
+    const u=new URLSearchParams(location.search).get('af')||'';
+    const limpo=u.trim().replace(/[^A-Za-z0-9._-]/g,'').slice(0,60);
+    if(limpo){localStorage.setItem(REF_KEY,limpo);return limpo}
+    return localStorage.getItem(REF_KEY)||'';
+  }catch(e){return ''}
+}
+try{quemIndicou()}catch(e){}
 function maskTel(v){const d=digits(v).replace(/^55(?=\d{10,11}$)/,'').slice(0,11);if(d.length<=2)return d.length?'('+d:'';if(d.length<=6)return`(${d.slice(0,2)}) ${d.slice(2)}`;if(d.length<=10)return`(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;return`(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`}
 function enviarLead(l){
   if(!CONFIG.leadWebhook)return;
-  const body=JSON.stringify({data:{name:l.nome,email:l.email,phone:'55'+l.tel}});
+  const body=JSON.stringify({data:{name:l.nome,email:l.email,phone:'55'+l.tel,ref:quemIndicou(),origem:location.href.slice(0,180)}});
   try{fetch(CONFIG.leadWebhook,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body})}catch(e){}
 }
 const gate=document.getElementById('gate'),gf=document.getElementById('gateForm'),appEl=document.querySelector('.app');

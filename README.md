@@ -3,7 +3,7 @@
 Ferramenta em que o cliente preenche os dados da empresa em 5 passos, escolhe um modelo
 e baixa um pacote `.zip` com o site pronto para o **Code Block do Squarespace**.
 
-Não tem instalação nem build: são arquivos estáticos publicados pelo **GitHub Pages**.
+Não tem instalação nem build: são arquivos estáticos publicados no **Railway**.
 
 ## Estrutura
 
@@ -40,7 +40,20 @@ js/app.js                  Interface: passos, fotos, cores da logo, rascunho, do
 - `fotos/` — imagens com os mesmos nomes dos marcadores `COLE-AQUI-URL-...`
 - `LEIA-ME.txt` — passo a passo de publicação no Squarespace
 
-## Publicação (GitHub Pages)
+## Publicação (Railway)
 
-Settings > Pages > Deploy from a branch > `main` / `(root)`. Domínio próprio em "Custom domain".
-Cada commit na `main` atualiza o site em 1 a 2 minutos.
+O projeto está no Railway, servindo os arquivos estáticos em `app.seusitegratis.com`.
+Cada commit na `main` publica sozinho, em 1 a 2 minutos.
+
+## Contatos de quem entra
+
+O portão de entrada pede nome, e-mail e WhatsApp antes de abrir a ferramenta.
+Esses contatos são enviados para o painel da DKC (`CONFIG.leadWebhook` em
+`js/config.js`) e aparecem em **Administração > Seu Site Grátis**.
+
+Com `leadWebhook` vazio, o contato fica só no navegador da própria pessoa e
+**não chega a lugar nenhum** — foi assim até 30/09/2026.
+
+O link de cada afiliado leva `?af=SUBID1`. O valor é guardado no navegador e
+mandado junto com o contato, para o painel saber quem trouxe a pessoa. Quem
+trouxe é decidido na primeira vez: voltar por outro link não muda o dono.
