@@ -7,5 +7,10 @@
   com telefone só em dígitos no padrão 55DDDNUMERO.
 */
 const CONFIG = {
-  leadWebhook: ''
+  leadWebhook: '',
+
+  /* gratisAte: data e hora REAIS em que a criação gratuita termina, no formato
+     'AAAA-MM-DDTHH:MM:SS-03:00' (horário de Brasília). Com data preenchida, a faixa
+     do topo mostra o cronômetro; vazio ou data passada, o cronômetro some. */
+  gratisAte: ''
 };

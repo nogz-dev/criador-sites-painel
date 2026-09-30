@@ -200,7 +200,7 @@ function readme(d){
   const seg=(d.segmento||'').trim(),cid=(d.cidade||'').trim();
   const L=getLead();
   return `SITE: ${nome}
-Gerado pelo Criador de Sites DK Marketing Digital
+Gerado pelo Seu Site Grátis (criador de sites)
 ${L?`Criado por: ${L.nome} | ${L.email} | ${maskTel(L.tel)}
 `:''}
 ARQUIVOS
@@ -304,6 +304,16 @@ gf.addEventListener('submit',e=>{
 const had=load();
 drawThumbs();refreshLogoColors(false);syncSwatches();
 show(had?cur:0);
-if(!getLead()){gate.hidden=false;appEl.inert=true;setTimeout(()=>gf.lnome.focus(),50)}
-else if(!had)welcome.showModal();
+/* ---------- página inicial > cadastro > criador ---------- */
+const lp=document.getElementById('lp');
+function abrirCriador(){
+  lp.hidden=true;
+  try{history.replaceState(null,'','#criar')}catch(e){}
+  if(!getLead()){gate.hidden=false;appEl.inert=true;setTimeout(()=>gf.lnome.focus(),50)}
+  else{appEl.inert=false;if(!had&&!welcome.open)welcome.showModal()}
+}
+window.abrirCriador=abrirCriador;
+document.getElementById('bHome').onclick=()=>{lp.hidden=false;appEl.inert=true;lp.scrollTop=0;try{history.replaceState(null,'',location.pathname)}catch(e){}};
+if(location.hash==='#criar')abrirCriador();
+else{appEl.inert=true;if(getLead()||had)lp.querySelectorAll('[data-cta]').forEach(b=>{if(b.textContent.includes('Criar meu site'))b.textContent='Continuar meu site'})}
 })();

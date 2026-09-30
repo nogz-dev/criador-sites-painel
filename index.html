@@ -3,19 +3,140 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Criador de Sites | DK Marketing Digital</title>
-<meta name="description" content="Crie o site da sua empresa em 5 passos e baixe pronto para publicar.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FFD20A'/><text x='16' y='21' font-family='Arial' font-weight='700' font-size='13' text-anchor='middle'>DK</text></svg>">
+<title>Seu Site Grátis | Crie o site da sua empresa</title>
+<meta name="description" content="Seu site pronto em menos de 30 minutos, de graça. Preencha, escolha um modelo e baixe o site da sua empresa.">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700;800&family=Wix+Madefor+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/landing.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
+<!-- ================= PÁGINA INICIAL (antes do cadastro) ================= -->
+<div class="lp" id="lp">
+  <div class="lp-urg" id="lpUrg">
+    <div class="lp-wrap lp-urg-in">
+      <span><b>Criação 100% grátis</b>, sem cartão de crédito</span>
+      <span class="lp-timer" id="lpTimer" hidden>Termina em <b data-timer>--</b></span>
+    </div>
+  </div>
+
+  <header class="lp-nav">
+    <div class="lp-wrap lp-nav-in">
+      <img class="lp-logo" src="img/logo.png" alt="Seu Site Grátis" width="720" height="238">
+      <nav class="lp-links"><a href="#lp-como">Como funciona</a><a href="#lp-precos">Comparativo</a></nav>
+      <button class="lp-btn lp-btn-sm" type="button" data-cta>Criar meu site grátis</button>
+    </div>
+  </header>
+
+  <section class="lp-hero">
+    <div class="lp-wrap lp-hero-in">
+      <div class="lp-hero-txt">
+        <span class="lp-pill">Grátis. Sem cartão. Sem programar.</span>
+        <h1>Seu site pronto em <span class="lp-mark">menos de 30 minutos.</span></h1>
+        <p class="lp-lead">Preencha as informações do seu negócio, escolha um modelo e baixe um site profissional, com botão de WhatsApp, mapa e tudo o que o cliente precisa para te chamar.</p>
+        <div class="lp-ctas">
+          <button class="lp-btn" type="button" data-cta>Criar meu site grátis</button>
+          <a class="lp-btn lp-btn-o" href="#lp-como">Ver como funciona</a>
+        </div>
+        <ul class="lp-trust"><li>Sem cartão de crédito</li><li>Prévia ao vivo</li><li>Funciona no celular</li></ul>
+      </div>
+      <div class="lp-serp" aria-hidden="true">
+        <div class="lp-q"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><span id="lpQuery">dentista em salvador</span><i class="lp-caret"></i></div>
+        <div class="lp-res">
+          <span class="lp-note">Esse botão é o que falta no seu negócio</span>
+          <div class="lp-res-url"><b>S</b>seunegocio.com.br</div>
+          <div class="lp-res-t">Seu Negócio · Atendimento hoje, orçamento pelo WhatsApp</div>
+          <div class="lp-res-m">5,0 <em>★★★★★</em> (48) · Aberto agora</div>
+          <div class="lp-res-b"><span>Ligar</span><span class="hl">Site</span><span>Rotas</span><span>WhatsApp</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-soft">
+    <div class="lp-wrap lp-center">
+      <span class="lp-pill">Não importa se você é…</span>
+      <h2 class="lp-h2">Todo negócio local está sendo pesquisado agora.</h2>
+      <div class="lp-chips">
+        <span>Dentista.</span><span>Advogado.</span><span>Contador.</span><span>Arquiteto.</span><span>Médico.</span><span>Personal trainer.</span><span>Psicólogo.</span><span>Eletricista.</span><span>Fotógrafo.</span><span>Corretor.</span><span>Dono de oficina.</span><span>Dono de restaurante.</span><span>Barbearia.</span><span>Salão de beleza.</span><span>Clínica.</span><span>Loja.</span><span>Consultor.</span><span>Prestador de serviços.</span><span class="dk">Ou dono de um pequeno negócio local.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <div class="lp-wrap">
+      <span class="lp-pill">A verdade que ninguém te conta</span>
+      <h2 class="lp-h2 lp-left">Rede social é terreno alugado.<br><span class="lp-mark">Site é imóvel próprio.</span></h2>
+      <div class="lp-vs">
+        <div class="lp-vs-c"><h3>Negócio só no Instagram</h3><ul class="lp-x">
+          <li>Depende de um algoritmo que muda toda semana</li>
+          <li>Uma conta bloqueada e some tudo: clientes, fotos, histórico</li>
+          <li>Não aparece quando alguém pesquisa no Google</li>
+          <li>Parece "bico", e o cliente pede desconto</li>
+          <li>Você passa o dia repetindo preço e endereço no direct</li></ul></div>
+        <div class="lp-vs-c good"><h3>Negócio com site profissional</h3><ul class="lp-ok">
+          <li>Um endereço que é seu, e ninguém tira de você</li>
+          <li>Aparece para quem já está procurando o seu serviço</li>
+          <li>Passa confiança antes mesmo do primeiro "oi"</li>
+          <li>Cobra o preço justo, porque parece empresa séria</li>
+          <li>Serviços, fotos, avaliações e WhatsApp num link só</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-dark" id="lp-como">
+    <div class="lp-wrap">
+      <span class="lp-pill lp-pill-dk">Como funciona</span>
+      <h2 class="lp-h2 lp-left">Seu site pronto em menos de 30 minutos.</h2>
+      <p class="lp-sub">Você preenche, a gente monta o layout na hora. Sem precisar entender de tecnologia.</p>
+      <ol class="lp-steps">
+        <li><span class="lp-min">cerca de 10 min</span><h3>Conte sobre o seu negócio</h3><p>Nome, serviços, contatos e horários. Com exemplos em cada campo para você não travar.</p></li>
+        <li><span class="lp-min">cerca de 10 min</span><h3>Fotos e estilo</h3><p>Envie sua logo e fotos direto do celular. Escolha um dos modelos e a cor da sua marca.</p></li>
+        <li><span class="lp-min">1 min</span><h3>Baixe o site pronto</h3><p>Você acompanha tudo na prévia ao vivo e baixa o site pronto para colocar no ar.</p></li>
+      </ol>
+      <div class="lp-total"><div><b>Tempo total:</b> menos de 30 minutos</div><div><b>Custo da criação:</b> R$ 0</div><button class="lp-btn lp-btn-w" type="button" data-cta>Começar agora</button></div>
+    </div>
+  </section>
+
+  <section class="lp-sec" id="lp-precos">
+    <div class="lp-wrap">
+      <h2 class="lp-h2 lp-left">Quanto custa ter um site hoje?</h2>
+      <div class="lp-table-wrap"><table class="lp-table">
+        <thead><tr><th></th><th>Agência</th><th>Freelancer</th><th>Fazer sozinho</th><th class="us">Seu Site Grátis</th></tr></thead>
+        <tbody>
+          <tr><th>Investimento na criação</th><td>R$ 1.000 a R$ 5.000</td><td>R$ 500 a R$ 1.500</td><td>Grátis, mas custa seu tempo</td><td class="us">R$ 0</td></tr>
+          <tr><th>Prazo</th><td>2 a 6 semanas</td><td>1 a 3 semanas</td><td>Meses (ou nunca)</td><td class="us">Menos de 30 minutos</td></tr>
+          <tr><th>Quem monta o site?</th><td>A agência</td><td>O freelancer</td><td>Você, do zero</td><td class="us">Você, com passo a passo guiado</td></tr>
+          <tr><th>Precisa saber tecnologia?</th><td>Não</td><td>Não</td><td>Sim</td><td class="us">Não</td></tr>
+          <tr><th>Alterar depois</th><td>Pagando de novo</td><td>Se ele responder</td><td>Talvez</td><td class="us">Sim, é só gerar de novo</td></tr>
+          <tr><th>Visual profissional</th><td>Sim</td><td>Depende</td><td>Raramente</td><td class="us">Sim, modelos prontos</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="lp-final">
+    <div class="lp-wrap lp-center">
+      <h2>Seu site pronto em menos de 30 minutos.<br>De graça.</h2>
+      <p>Comece agora. Você vê o site nascer enquanto preenche.</p>
+      <button class="lp-btn lp-btn-w" type="button" data-cta>Criar meu site grátis</button>
+    </div>
+  </section>
+
+  <footer class="lp-foot">
+    <div class="lp-wrap lp-foot-in"><img src="img/logo.png" alt="Seu Site Grátis" width="720" height="238"><p>Seu Site Grátis é um projeto da DK Marketing Digital.</p></div>
+  </footer>
+
+  <div class="lp-mcta"><button class="lp-btn" type="button" data-cta>Criar meu site grátis</button></div>
+</div>
+
 <div class="app">
   <header class="bar">
-    <div class="logo"><i>DK</i>Criador de Sites<small>por DK Marketing Digital</small></div>
+    <button class="logo logo-btn" type="button" id="bHome" title="Voltar ao início"><img src="img/logo.png" alt="Seu Site Grátis" width="720" height="238"><small>Criador de sites</small></button>
     <div class="bar-actions">
       <button class="lnk" id="bHelp" type="button">Como funciona</button>
       <button class="lnk" id="bClear" type="button">Recomeçar</button>
@@ -149,7 +270,7 @@
 <div class="gate" id="gate" hidden>
   <div class="gate-in">
     <div class="gate-hero">
-      <div class="logo"><i>DK</i>Criador de Sites</div>
+      <div class="logo"><img src="img/logo.png" alt="Seu Site Grátis" width="720" height="238"></div>
       <h1>O site da sua empresa, pronto em poucos minutos.</h1>
       <p>Preencha as informações do seu negócio, escolha um modelo e baixe o site pronto para publicar.</p>
       <ul>
@@ -207,5 +328,6 @@
 <script src="js/modelos/impacto.js"></script>
 <script src="js/gerador.js"></script>
 <script src="js/app.js"></script>
+<script src="js/landing.js"></script>
 </body>
 </html>
