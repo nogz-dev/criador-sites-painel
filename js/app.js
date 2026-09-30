@@ -23,6 +23,7 @@ function render(anchor){
       if(a){const el=w.document.querySelector(a)||w.document.querySelector('#inicio');if(el)w.scrollTo({top:a==='#inicio'?0:el.offsetTop-70,behavior:'instant'})}
       else w.scrollTo(0,y);
     }catch(e){}};
+    const up=document.getElementById('urlPill');if(up){const nm=data().nome.trim();up.textContent=(nm?slug(nm):'seusite')+'.com.br'}
     frame.srcdoc=buildSite(data(),'full',imgs);
     save();
   },200);
@@ -30,7 +31,7 @@ function render(anchor){
 
 /* ---------- passos ---------- */
 const stepsEl=document.getElementById('steps');
-STEPS.forEach((s,i)=>{const li=document.createElement('li');li.innerHTML=`<button type="button"><b>${i+1}</b>${s.l}</button>`;li.querySelector('button').onclick=()=>go(i);stepsEl.appendChild(li)});
+STEPS.forEach((s,i)=>{const li=document.createElement('li');li.innerHTML=`<button type="button" title="${s.l}"><b>${i+1}</b><span>${s.l}</span></button>`;li.querySelector('button').onclick=()=>go(i);stepsEl.appendChild(li)});
 function validate(i){
   if(i===0){const box=document.getElementById('fNome');const ok=!!f.nome.value.trim();box.classList.toggle('bad',!ok);if(!ok){f.nome.focus();return false}}
   return true;
@@ -43,6 +44,7 @@ function show(n){
   cur=n;maxReached=Math.max(maxReached,n);
   document.querySelectorAll('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   [...stepsEl.children].forEach((li,i)=>{li.classList.toggle('on',i===n);li.classList.toggle('done',i<n||(i<=maxReached&&i!==n));li.querySelector('b').textContent=(i!==n&&i<=maxReached&&i<5&&stepDone(i))?'✓':i+1});
+  const sc=document.getElementById('stepCount');if(sc)sc.textContent='Passo '+(n+1)+' de '+STEPS.length;
   stepsEl.children[n].scrollIntoView({block:'nearest',inline:'center'});
   document.getElementById('prog').style.width=(n/(STEPS.length-1)*100)+'%';
   const back=document.getElementById('bBack'),next=document.getElementById('bNext');
@@ -196,9 +198,11 @@ function readme(d){
   const sq=buildSite(d,'sqs',imgs);const nome=d.nome.trim();
   const fotos=[imgs.logo&&'- fotos/logo.png  ->  troque COLE-AQUI-URL-logo.png',imgs.hero&&'- fotos/foto-principal.jpg  ->  troque COLE-AQUI-URL-foto-principal.jpg',...imgs.gal.map((_,i)=>`- fotos/galeria-${i+1}.jpg  ->  troque COLE-AQUI-URL-galeria-${i+1}.jpg`)].filter(Boolean);
   const seg=(d.segmento||'').trim(),cid=(d.cidade||'').trim();
+  const L=getLead();
   return `SITE: ${nome}
 Gerado pelo Criador de Sites DK Marketing Digital
-
+${L?`Criado por: ${L.nome} | ${L.email} | ${maskTel(L.tel)}
+`:''}
 ARQUIVOS
 - ${slug(nome)}-squarespace.html  ->  código para colar no Squarespace
 - ${slug(nome)}-previa.html  ->  prévia completa, abre com dois cliques no navegador
@@ -269,8 +273,37 @@ f.addEventListener('input',()=>render());
 f.addEventListener('change',e=>{if(e.target.type!=='file')render()});
 
 /* ---------- início ---------- */
+/* ---------- cadastro antes de começar ---------- */
+const LEAD_KEY='dk-criador-lead';
+function getLead(){try{return JSON.parse(localStorage.getItem(LEAD_KEY)||'null')}catch(e){return null}}
+function maskTel(v){const d=digits(v).replace(/^55(?=\d{10,11}$)/,'').slice(0,11);if(d.length<=2)return d.length?'('+d:'';if(d.length<=6)return`(${d.slice(0,2)}) ${d.slice(2)}`;if(d.length<=10)return`(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;return`(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`}
+function enviarLead(l){
+  if(!CONFIG.leadWebhook)return;
+  const body=JSON.stringify({data:{name:l.nome,email:l.email,phone:'55'+l.tel}});
+  try{fetch(CONFIG.leadWebhook,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body})}catch(e){}
+}
+const gate=document.getElementById('gate'),gf=document.getElementById('gateForm'),appEl=document.querySelector('.app');
+gf.ltel.addEventListener('input',()=>{gf.ltel.value=maskTel(gf.ltel.value)});
+gf.addEventListener('input',e=>{const box=e.target.closest('.f,.chk');if(box)box.classList.remove('bad');if(e.target.name==='lok')document.getElementById('gOkErr').style.display='none'});
+gf.addEventListener('submit',e=>{
+  e.preventDefault();
+  const nome=gf.lnome.value.trim(),email=gf.lemail.value.trim(),tel=digits(gf.ltel.value).replace(/^55(?=\d{10,11}$)/,'');
+  const okNome=nome.length>=2,okEmail=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email),okTel=/^[1-9]{2}9?\d{8}$/.test(tel),ok=gf.lok.checked;
+  document.getElementById('gNome').classList.toggle('bad',!okNome);
+  document.getElementById('gEmail').classList.toggle('bad',!okEmail);
+  document.getElementById('gTel').classList.toggle('bad',!okTel);
+  document.getElementById('gOkErr').style.display=ok?'none':'block';
+  if(!(okNome&&okEmail&&okTel&&ok)){const first=gf.querySelector('.bad input')||(ok?null:gf.lok);if(first)first.focus();return}
+  const lead={nome,email,tel,em:new Date().toISOString()};
+  try{localStorage.setItem(LEAD_KEY,JSON.stringify(lead))}catch(e){}
+  enviarLead(lead);
+  gate.hidden=true;appEl.inert=false;
+  if(!had)welcome.showModal();
+});
+
 const had=load();
 drawThumbs();refreshLogoColors(false);syncSwatches();
 show(had?cur:0);
-if(!had)welcome.showModal();
+if(!getLead()){gate.hidden=false;appEl.inert=true;setTimeout(()=>gf.lnome.focus(),50)}
+else if(!had)welcome.showModal();
 })();

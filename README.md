@@ -11,7 +11,7 @@ Não tem instalação nem build: são arquivos estáticos publicados pelo **GitH
 index.html                 Página da ferramenta (formulário em passos + prévia)
 css/app.css                Visual da ferramenta (não afeta os sites gerados)
 js/utils.js                Funções de apoio (textos, WhatsApp, cores)
-js/modelos/_registro.js    Lista de modelos (MODELOS)
+js/modelos/registro.js    Lista de modelos (MODELOS)
 js/modelos/elegante.js     Modelo Elegante
 js/modelos/moderno.js      Modelo Moderno
 js/modelos/impacto.js      Modelo Impacto

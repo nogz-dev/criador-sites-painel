@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FFD20A'/><text x='16' y='21' font-family='Arial' font-weight='700' font-size='13' text-anchor='middle'>DK</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700;800&family=Wix+Madefor+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -24,6 +24,7 @@
   <div class="main">
     <div class="panel">
       <div class="stepper">
+        <p class="step-count" id="stepCount"></p>
         <ol class="steps" id="steps"></ol>
         <div class="prog"><span id="prog"></span></div>
       </div>
@@ -140,8 +141,34 @@
         </div>
         <button class="pv-close" type="button" id="bPvClose">Voltar ao formulário</button>
       </div>
-      <div class="stage" id="stage"><iframe id="frame" title="Prévia do site"></iframe></div>
+      <div class="stage" id="stage"><div class="browser"><div class="bbar"><i></i><i></i><i></i><span id="urlPill">seusite.com.br</span></div><iframe id="frame" title="Prévia do site"></iframe></div></div>
     </section>
+  </div>
+</div>
+
+<div class="gate" id="gate" hidden>
+  <div class="gate-in">
+    <div class="gate-hero">
+      <div class="logo"><i>DK</i>Criador de Sites</div>
+      <h1>O site da sua empresa, pronto em poucos minutos.</h1>
+      <p>Preencha as informações do seu negócio, escolha um modelo e baixe o site pronto para publicar.</p>
+      <ul>
+        <li>3 modelos modernos para escolher</li>
+        <li>Prévia ao vivo enquanto você preenche</li>
+        <li>Botão de WhatsApp e mapa já incluídos</li>
+      </ul>
+    </div>
+    <form class="gate-card" id="gateForm" novalidate>
+      <h2>Antes de começar</h2>
+      <p class="gate-sub">Deixe seu contato para acessarmos o seu projeto e te ajudarmos na publicação.</p>
+      <label class="f" id="gNome"><span>Seu nome</span><input type="text" name="lnome" autocomplete="name" placeholder="Nome e sobrenome"><div class="err">Digite seu nome.</div></label>
+      <label class="f" id="gEmail"><span>E-mail</span><input type="email" name="lemail" autocomplete="email" inputmode="email" placeholder="voce@email.com"><div class="err">Digite um e-mail válido.</div></label>
+      <label class="f" id="gTel"><span>WhatsApp</span><input type="tel" name="ltel" autocomplete="tel" inputmode="tel" placeholder="(71) 99999-9999"><div class="err">Digite um celular com DDD.</div></label>
+      <label class="chk gate-chk" id="gOk"><input type="checkbox" name="lok"> <span>Concordo em receber contato da DK Marketing Digital sobre o meu site.</span></label>
+      <div class="err gate-err" id="gOkErr">Marque a opção acima para continuar.</div>
+      <button class="big" type="submit">Começar a criar meu site</button>
+      <p class="gate-note">Seus dados não são compartilhados com terceiros.</p>
+    </form>
   </div>
 </div>
 
@@ -172,8 +199,9 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- ordem importa: utilitários > modelos > gerador > interface -->
+<script src="js/config.js"></script>
 <script src="js/utils.js"></script>
-<script src="js/modelos/_registro.js"></script>
+<script src="js/modelos/registro.js"></script>
 <script src="js/modelos/elegante.js"></script>
 <script src="js/modelos/moderno.js"></script>
 <script src="js/modelos/impacto.js"></script>
