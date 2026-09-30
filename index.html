@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Criador de Sites | DK Marketing Digital</title>
+<meta name="description" content="Crie o site da sua empresa em 5 passos e baixe pronto para publicar.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23FFD20A'/><text x='16' y='21' font-family='Arial' font-weight='700' font-size='13' text-anchor='middle'>DK</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="logo"><i>DK</i>Criador de Sites<small>por DK Marketing Digital</small></div>
+    <div class="bar-actions">
+      <button class="lnk" id="bHelp" type="button">Como funciona</button>
+      <button class="lnk" id="bClear" type="button">Recomeçar</button>
+    </div>
+  </header>
+  <div class="main">
+    <div class="panel">
+      <div class="stepper">
+        <ol class="steps" id="steps"></ol>
+        <div class="prog"><span id="prog"></span></div>
+      </div>
+      <form class="body" id="f" autocomplete="off" onsubmit="return false">
+
+        <section class="step" data-step="0">
+          <h2>Sua empresa</h2>
+          <p class="intro">Comece pelo básico. Essas informações aparecem no topo do site e também quando alguém encontra sua empresa no Google.</p>
+          <label class="f" id="fNome"><span>Nome da empresa <em class="tag req">Obrigatório</em></span><input type="text" name="nome" placeholder="Ex.: Clínica Sorriso da Barra"><div class="err">Digite o nome da empresa para continuar.</div></label>
+          <div class="row2">
+            <label class="f"><span>Ramo de atuação</span><input type="text" name="segmento" placeholder="Ex.: Odontologia"></label>
+            <label class="f"><span>Cidade</span><input type="text" name="cidade" placeholder="Ex.: Salvador"></label>
+          </div>
+          <label class="f"><span>Frase principal</span><input type="text" name="slogan" maxlength="90" placeholder="Ex.: Seu sorriso cuidado por quem entende"><div class="hint">É o título grande que o visitante lê primeiro. Prefira algo curto, com até 8 palavras, que diga o que você oferece.</div></label>
+          <label class="f"><span>Frase de apoio <em class="tag">Opcional</em></span><input type="text" name="apoio" maxlength="160" placeholder="Ex.: Atendimento com hora marcada e planos facilitados"><div class="hint">Um complemento que aparece logo abaixo do título.</div></label>
+        </section>
+
+        <section class="step" data-step="1">
+          <h2>Conte sobre o seu negócio</h2>
+          <p class="intro">Escreva como se estivesse explicando para um cliente que nunca ouviu falar de você: o que faz, há quanto tempo, e por que escolher sua empresa.</p>
+          <label class="f"><span>Quem somos</span><textarea name="sobre" rows="6" placeholder="Há 12 anos cuidamos dos sorrisos da Barra e região. Nossa equipe reúne especialistas em clínica geral, ortodontia e implantes."></textarea><div class="hint">Para começar um novo parágrafo, deixe uma linha em branco.</div></label>
+          <label class="f"><span>Nome da seção de serviços</span><input type="text" name="tituloServicos" placeholder="Nossos serviços"><div class="hint">Troque se fizer mais sentido, como "Nossos produtos", "Cardápio" ou "Tratamentos".</div></label>
+          <label class="f"><span>Serviços ou produtos</span><textarea name="servicos" rows="6" placeholder="Limpeza | Remoção de tártaro e polimento&#10;Clareamento | Resultado em até 3 sessões&#10;Implantes"></textarea><div class="ex">Um por linha. Para incluir uma descrição, use a barra: <code>Clareamento | Resultado em até 3 sessões</code></div></label>
+          <div class="tip"><strong>Deixe o site mais convincente</strong>Números e depoimentos de clientes reais passam confiança. Os dois campos abaixo são opcionais, mas fazem diferença.</div>
+          <label class="f"><span>Números da empresa <em class="tag">Opcional</em></span><textarea name="numeros" rows="3" placeholder="12 anos | de experiência&#10;+5 mil | clientes atendidos&#10;4,9 | de nota no Google"></textarea><div class="ex">Até 4, um por linha: <code>número | legenda</code></div></label>
+          <label class="f"><span>Depoimentos de clientes <em class="tag">Opcional</em></span><textarea name="depoimentos" rows="4" placeholder="Atendimento impecável, recomendo demais! | Mariana S.&#10;Resolveram meu problema em uma visita. | Carlos R."></textarea><div class="ex">Um por linha: <code>o que o cliente disse | nome do cliente</code></div></label>
+        </section>
+
+        <section class="step" data-step="2">
+          <h2>Como o cliente fala com você</h2>
+          <p class="intro">Preencha pelo menos o WhatsApp. Com ele, o site ganha botões que abrem uma conversa com você já com uma mensagem pronta.</p>
+          <label class="f"><span>WhatsApp <em class="tag req">Recomendado</em></span><input type="tel" name="whatsapp" placeholder="(71) 99999-9999"><div class="hint">Sempre com DDD.</div></label>
+          <div class="row2">
+            <label class="f"><span>Telefone fixo</span><input type="tel" name="telefone" placeholder="(71) 3333-3333"></label>
+            <label class="f"><span>Instagram</span><input type="text" name="instagram" placeholder="@suaempresa"></label>
+          </div>
+          <label class="f"><span>E-mail</span><input type="email" name="email" placeholder="contato@suaempresa.com.br"></label>
+          <label class="f"><span>Endereço</span><input type="text" name="endereco" placeholder="Rua, número, bairro, cidade"><div class="hint">O site cria automaticamente um botão "Ver no mapa" com esse endereço.</div></label>
+          <label class="f"><span>Horário de funcionamento</span><textarea name="horarios" rows="3" placeholder="Seg a Sex: 8h às 18h&#10;Sábado: 8h às 12h"></textarea><div class="hint">Um horário por linha.</div></label>
+        </section>
+
+        <section class="step" data-step="3">
+          <h2>Fotos e logo</h2>
+          <p class="intro">Fotos reais da sua empresa, da equipe ou dos seus produtos deixam o site muito mais bonito e confiável. Pode enviar direto do celular.</p>
+          <div class="upbox">
+            <div class="lbl">Logo</div>
+            <p class="hint">De preferência em PNG com fundo transparente. Vamos usar as cores dela para sugerir a cor do site.</p>
+            <label class="upbtn" for="upLogo">Escolher logo</label><input type="file" id="upLogo" accept="image/*">
+            <div class="thumbs" id="tLogo"></div>
+          </div>
+          <div class="upbox">
+            <div class="lbl">Foto principal <em class="tag req">Recomendado</em></div>
+            <p class="hint">Aparece grande no topo do site. Use uma foto na horizontal, bem iluminada, do seu espaço ou da equipe.</p>
+            <label class="upbtn" for="upHero">Escolher foto</label><input type="file" id="upHero" accept="image/*">
+            <div class="thumbs" id="tHero"></div>
+          </div>
+          <div class="upbox">
+            <div class="lbl">Galeria <em class="tag">Até 6 fotos</em></div>
+            <p class="hint">A 1ª foto aparece ao lado do texto "Quem somos". As demais formam a galeria.</p>
+            <label class="upbtn" for="upGal">Escolher fotos</label><input type="file" id="upGal" accept="image/*" multiple>
+            <div class="thumbs" id="tGal"></div>
+          </div>
+        </section>
+
+        <section class="step" data-step="4">
+          <h2>Estilo do site</h2>
+          <p class="intro">Escolha o modelo que mais combina com o seu negócio e a cor principal. Você vê o resultado na hora, na prévia.</p>
+          <div class="lbl">Modelo</div>
+          <div class="tpls">
+            <label class="tpl"><input type="radio" name="template" value="elegante"><div class="thumb th-e"><s></s><s></s></div><div><b>Elegante</b><small>Foto em tela cheia e letras refinadas. Ideal para clínicas, estética e escritórios.</small></div></label>
+            <label class="tpl"><input type="radio" name="template" value="moderno" checked><div class="thumb th-m"><span><s></s><s></s></span><u></u></div><div><b>Moderno</b><small>Claro, com cartões arredondados. Ideal para serviços, lojas e tecnologia.</small></div></label>
+            <label class="tpl"><input type="radio" name="template" value="impacto"><div class="thumb th-i"><s></s><s></s></div><div><b>Impacto</b><small>Fundo escuro e letras gigantes. Ideal para academias, barbearias e eventos.</small></div></label>
+          </div>
+          <div class="lbl">Cor principal</div>
+          <div class="hint" style="margin:0 0 10px">Use a cor mais forte da sua logo. Ela aparece nos botões e destaques.</div>
+          <div id="logoColorsBox" hidden><div class="sub">Cores da sua logo</div><div class="colors" id="logoColors"></div></div>
+          <div class="sub">Sugestões</div>
+          <div class="colors" id="colors"></div>
+          <div class="sub">Outra cor</div>
+          <div class="colors"><input type="color" name="cor" value="#1F5EFF" aria-label="Escolher qualquer cor"></div>
+          <label class="chk"><input type="checkbox" name="credito"> Mostrar "Site por DK Marketing Digital" no rodapé</label>
+        </section>
+
+        <section class="step" data-step="5">
+          <h2>Seu site está pronto</h2>
+          <p class="intro">Baixe o arquivo do seu site. Se quiser deixar ele ainda mais completo antes, veja a conferência abaixo: itens em cinza são opcionais e você pode voltar e adicionar.</p>
+          <button class="big" type="button" id="bDownload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>Baixar meu site (.zip)</button>
+          <button class="ghost" type="button" id="bPreview">Baixar só a prévia para abrir no computador</button>
+          <button class="ghost" type="button" id="bCode">Ver ou copiar o código</button>
+          <div class="sub" style="margin-top:26px;font-size:14px;color:var(--ink)">Conferência</div>
+          <ul class="check" id="check"></ul>
+          <div class="how">
+            <h3>E agora?</h3>
+            <ol>
+              <li><b>Baixe o pacote do site.</b> É um arquivo .zip com o nome da sua empresa. Dentro dele vão o site, as suas fotos e as instruções de publicação.</li>
+              <li><b>Se quiser, confira antes.</b> Abra o arquivo que termina em "-previa.html" e o site aparece no navegador do jeito que vai ficar no ar.</li>
+              <li><b>Envie o .zip para a equipe responsável.</b> Não precisa abrir nem mexer em nada. A equipe coloca o site no ar com o endereço da sua empresa.</li>
+            </ol>
+          </div>
+        </section>
+      </form>
+      <div class="foot">
+        <button class="back" type="button" id="bBack">Voltar</button>
+        <button class="pv-open" type="button" id="bPv">Prévia</button>
+        <button class="next" type="button" id="bNext">Próximo</button>
+      </div>
+    </div>
+    <section class="prev" aria-label="Prévia do site">
+      <div class="prev-bar">
+        <span><b>Prévia ao vivo.</b> Atualiza enquanto você digita.</span>
+        <div class="dev" role="group" aria-label="Tamanho da prévia">
+          <button type="button" data-d="desk" aria-pressed="true">Computador</button>
+          <button type="button" data-d="mobile" aria-pressed="false">Celular</button>
+        </div>
+        <button class="pv-close" type="button" id="bPvClose">Voltar ao formulário</button>
+      </div>
+      <div class="stage" id="stage"><iframe id="frame" title="Prévia do site"></iframe></div>
+    </section>
+  </div>
+</div>
+
+<dialog id="welcome">
+  <div class="welcome">
+    <span class="badge">Leva cerca de 10 minutos</span>
+    <h2>Crie o site da sua empresa em 5 passos</h2>
+    <p>Você preenche as informações, escolhe o visual e baixa o site pronto. A prévia do lado mostra o resultado enquanto você digita.</p>
+    <ol><li>Dados da empresa</li><li>Textos e serviços</li><li>Contatos</li><li>Fotos e logo</li><li>Estilo e cor</li></ol>
+    <div class="have"><strong>Deixe à mão antes de começar</strong>Logo, 3 a 6 fotos boas da empresa, número de WhatsApp e a lista dos seus serviços ou produtos.</div>
+    <button class="big" type="button" id="wStart">Começar</button>
+    <button class="ghost" type="button" id="wExample">Ver um site de exemplo primeiro</button>
+  </div>
+</dialog>
+
+<dialog id="dlg">
+  <div class="dlg-h"><h3>Código do site</h3><button class="x" type="button" id="dlgClose" aria-label="Fechar">×</button></div>
+  <div class="dlg-b">
+    <div class="seg" role="group">
+      <button type="button" data-m="sqs" aria-pressed="true">Squarespace (bloco de código)</button>
+      <button type="button" data-m="full" aria-pressed="false">Arquivo completo</button>
+    </div>
+    <p id="dlgHint"></p>
+    <textarea id="code" readonly></textarea>
+    <div style="margin-top:12px"><button class="big" type="button" id="bCopy">Copiar código</button></div>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ordem importa: utilitários > modelos > gerador > interface -->
+<script src="js/utils.js"></script>
+<script src="js/modelos/_registro.js"></script>
+<script src="js/modelos/elegante.js"></script>
+<script src="js/modelos/moderno.js"></script>
+<script src="js/modelos/impacto.js"></script>
+<script src="js/gerador.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

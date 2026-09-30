@@ -1,0 +1,46 @@
+# Criador de Sites — DK Marketing Digital
+
+Ferramenta em que o cliente preenche os dados da empresa em 5 passos, escolhe um modelo
+e baixa um pacote `.zip` com o site pronto para o **Code Block do Squarespace**.
+
+Não tem instalação nem build: são arquivos estáticos publicados pelo **GitHub Pages**.
+
+## Estrutura
+
+```
+index.html                 Página da ferramenta (formulário em passos + prévia)
+css/app.css                Visual da ferramenta (não afeta os sites gerados)
+js/utils.js                Funções de apoio (textos, WhatsApp, cores)
+js/modelos/_registro.js    Lista de modelos (MODELOS)
+js/modelos/elegante.js     Modelo Elegante
+js/modelos/moderno.js      Modelo Moderno
+js/modelos/impacto.js      Modelo Impacto
+js/gerador.js              Monta o HTML do site (estrutura comum + formato Squarespace)
+js/app.js                  Interface: passos, fotos, cores da logo, rascunho, download
+```
+
+## Onde mexer
+
+- **Visual de um modelo** (cores, fontes, espaçamentos): `js/modelos/<modelo>.js`
+- **Estrutura das seções** (ordem, textos fixos, novas seções): `js/gerador.js`
+- **Campos e passos do formulário**: `index.html` + `js/app.js`
+- **Formato para o Squarespace** (ajustes que escondem cabeçalho/rodapé do template): `js/gerador.js`, bloco `if(SQ)`
+
+## Modelo novo
+
+1. Copie `js/modelos/moderno.js` para `js/modelos/novo.js` e troque `MODELOS.moderno` por `MODELOS.novo`.
+2. Ajuste `fontes`, `vars` e `css` (as regras do modelo começam com `.t-novo`).
+3. Inclua `<script src="js/modelos/novo.js"></script>` no `index.html`, antes de `gerador.js`.
+4. Adicione o cartão do modelo no passo "Estilo" do `index.html` (`value="novo"`).
+
+## O que o cliente baixa
+
+- `empresa-squarespace.html` — código para colar em Página em branco > Bloco Código ("Exibir fonte" desligado)
+- `empresa-previa.html` — prévia completa, abre no navegador
+- `fotos/` — imagens com os mesmos nomes dos marcadores `COLE-AQUI-URL-...`
+- `LEIA-ME.txt` — passo a passo de publicação no Squarespace
+
+## Publicação (GitHub Pages)
+
+Settings > Pages > Deploy from a branch > `main` / `(root)`. Domínio próprio em "Custom domain".
+Cada commit na `main` atualiza o site em 1 a 2 minutos.
