@@ -1,5 +1,7 @@
 /* Modelo Impacto: Escuro, letras gigantes. Academias, barbearias, eventos. */
 MODELOS.impacto = {
+  // hero: 'full' = foto de fundo | 'split' = texto + foto ao lado
+  hero: 'full', impacto: true, fundo: '#0D0E10',
   nome: 'Impacto',
   // fontes do Google Fonts (parte depois de "css2?")
   fontes: 'family=Anton&family=Inter:wght@400;500;600;700',

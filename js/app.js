@@ -4,6 +4,7 @@ const f=document.getElementById('f');
 const frame=document.getElementById('frame');
 const PRESETS=['#1F5EFF','#0E9F6E','#E4572E','#7C3AED','#C8102E','#0F766E','#D4A017','#111111'];
 const imgs={logo:null,hero:null,gal:[]};
+const links={},estado={};
 const LS='dk-criador-sites-v2';
 const STEPS=[{l:'Empresa',a:'#inicio'},{l:'Textos',a:'#sobre'},{l:'Contato',a:'#contato'},{l:'Fotos',a:'#inicio'},{l:'Estilo',a:'#inicio'},{l:'Baixar',a:'#inicio'}];
 let cur=0,maxReached=0;
@@ -44,7 +45,7 @@ function show(n){
   cur=n;maxReached=Math.max(maxReached,n);
   document.querySelectorAll('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   [...stepsEl.children].forEach((li,i)=>{li.classList.toggle('on',i===n);li.classList.toggle('done',i<n||(i<=maxReached&&i!==n));li.querySelector('b').textContent=(i!==n&&i<=maxReached&&i<5&&stepDone(i))?'✓':i+1});
-  const sc=document.getElementById('stepCount');if(sc)sc.textContent='Passo '+(n+1)+' de '+STEPS.length;
+  const sc=document.getElementById('stepCount');if(sc)sc.textContent='Passo '+(n+1)+' de '+STEPS.length+': '+STEPS[n].l;
   stepsEl.children[n].scrollIntoView({block:'nearest',inline:'center'});
   document.getElementById('prog').style.width=(n/(STEPS.length-1)*100)+'%';
   const back=document.getElementById('bBack'),next=document.getElementById('bNext');
@@ -53,12 +54,36 @@ function show(n){
   if(n<STEPS.length-1)next.textContent=n===STEPS.length-2?'Finalizar':'Próximo: '+STEPS[n+1].l;
   f.scrollTop=0;
   if(n===STEPS.length-1)drawCheck();
+  if(n===4)recomendar();
+  if(n===STEPS.length-1){atualizarEntrega();if(fotosPendentes().some(x=>!estado[chave(x)]))subirTodas()}
   render(STEPS[n].a);
 }
 function stepDone(i){const d=data();return [!!d.nome.trim(),!!(d.sobre.trim()||d.servicos.trim()),!!(d.whatsapp.trim()||d.telefone.trim()||d.email.trim()),!!(imgs.logo||imgs.hero||imgs.gal.length),true][i]}
 document.getElementById('bNext').onclick=()=>go(cur+1);
 document.getElementById('bBack').onclick=()=>show(Math.max(0,cur-1));
 f.nome.addEventListener('input',()=>{if(f.nome.value.trim())document.getElementById('fNome').classList.remove('bad')});
+
+/* ---------- versão leve das fotos para o código com fotos ---------- */
+let imgsLite=null,liteKey='';
+function encolher(src,max,q){return new Promise(res=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));if(k>=1&&src.length<260000)return res(src);const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.onerror=()=>res(src);im.src=src})}
+function fotosCodigo(){const k=[imgs.logo,imgs.hero,...imgs.gal].map(x=>x?x.length:0).join('.');if(!(imgsLite&&k===liteKey))prepararLite();return(imgsLite&&k===liteKey)?imgsLite:imgs}
+async function prepararLite(){
+  const key=[imgs.logo,imgs.hero,...imgs.gal].map(x=>x?x.length:0).join('.');
+  if(key===liteKey&&imgsLite)return imgsLite;
+  liteKey=key;
+  const lite={logo:imgs.logo,hero:imgs.hero?await encolher(imgs.hero,1200,.72):null,gal:[]};
+  for(const g of imgs.gal)lite.gal.push(await encolher(g,900,.7));
+  if(key===liteKey)imgsLite=lite;
+  return lite;
+}
+
+/* ---------- modelos que combinam com o ramo ---------- */
+function recomendar(){
+  const norm=x=>(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const seg=norm(f.segmento.value+' '+f.nome.value);let n=0;
+  document.querySelectorAll('.tpl').forEach(c=>{const ok=!!seg.trim()&&(c.dataset.k||'').split(' ').some(k=>k&&seg.includes(k));c.classList.toggle('rec',ok);if(ok)n++});
+  const h=document.getElementById('tplHint');if(h){h.hidden=!n;h.textContent=n?'Os modelos marcados combinam com o ramo que você informou, mas qualquer um funciona.':''}
+}
 
 /* ---------- conferência final ---------- */
 function drawCheck(){
@@ -82,11 +107,13 @@ function drawCheck(){
 /* ---------- rascunho ---------- */
 function save(){
   try{localStorage.setItem(LS,JSON.stringify({d:data(),step:cur,max:maxReached}))}catch(e){}
+  try{localStorage.setItem(LS+'-links',JSON.stringify(links))}catch(e){}
   try{localStorage.setItem(LS+'-img',JSON.stringify(imgs))}catch(e){try{localStorage.removeItem(LS+'-img')}catch(_){}}
 }
 function load(){
   try{const raw=localStorage.getItem(LS);if(!raw)return false;const o=JSON.parse(raw);fill(o.d||{});maxReached=o.max||0;cur=Math.min(o.step||0,5);
     try{const im=JSON.parse(localStorage.getItem(LS+'-img')||'null');if(im){imgs.logo=im.logo||null;imgs.hero=im.hero||null;imgs.gal=Array.isArray(im.gal)?im.gal:[]}}catch(e){}
+    try{Object.assign(links,JSON.parse(localStorage.getItem(LS+'-links')||'{}'))}catch(e){}
     return true}catch(e){return false}
 }
 function fill(d){
@@ -140,20 +167,48 @@ function readImg(file,max,keepPng){
     r.readAsDataURL(file);
   });
 }
+/* ---------- envio das fotos: cada foto vira um LINK (o Squarespace só aceita imagem por link) ---------- */
+function chave(src){let h=5381;const st=Math.max(1,Math.floor(src.length/4000));for(let i=0;i<src.length;i+=st)h=(h*33+src.charCodeAt(i))>>>0;return src.length+'-'+h.toString(36)}
+const linkDe=src=>src?links[chave(src)]||null:null;
+function imgsComLinks(){return{logo:imgs.logo,hero:imgs.hero,gal:imgs.gal,urls:{logo:linkDe(imgs.logo),hero:linkDe(imgs.hero),gal:imgs.gal.map(linkDe)}}}
+function fotosPendentes(){return[imgs.logo,imgs.hero,...imgs.gal].filter(Boolean).filter(s=>!linkDe(s))}
+async function subirFoto(src,tipo){
+  const k=chave(src);if(links[k]||estado[k]==='enviando')return;
+  estado[k]='enviando';drawThumbs();atualizarEntrega();
+  try{
+    const blob=await (await fetch(src)).blob();
+    const fd=new FormData();fd.append('arquivo',blob,tipo==='logo'?'logo.png':'foto.jpg');fd.append('tipo',tipo);
+    const r=await fetch('api/fotos',{method:'POST',body:fd});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json();if(!j.url)throw new Error('sem url');
+    links[k]=j.url;delete estado[k];save();
+  }catch(e){estado[k]='erro'}
+  drawThumbs();atualizarEntrega();
+}
+function subirTodas(){if(imgs.logo)subirFoto(imgs.logo,'logo');[imgs.hero,...imgs.gal].filter(Boolean).forEach(s=>subirFoto(s,'foto'))}
+function atualizarEntrega(){
+  const b=document.getElementById('fotosStatus');if(!b)return;
+  const todas=[imgs.logo,imgs.hero,...imgs.gal].filter(Boolean);
+  const env=todas.filter(s=>estado[chave(s)]==='enviando').length,err=todas.filter(s=>estado[chave(s)]==='erro').length,ok=todas.filter(s=>linkDe(s)).length;
+  b.hidden=!todas.length;b.className='fstat'+(err?' err':env?' env':' ok');
+  b.innerHTML=err?`${err} foto${err>1?'s':''} não ${err>1?'foram enviadas':'foi enviada'}. <button type="button" id="bRetry">Tentar de novo</button>`:env?`Enviando suas fotos (${ok} de ${todas.length})…`:`Fotos prontas: ${ok} de ${todas.length} com link.`;
+  const rb=document.getElementById('bRetry');if(rb)rb.onclick=()=>{todas.forEach(s=>{if(estado[chave(s)]==='erro')delete estado[chave(s)]});subirTodas()};
+}
+
 function drawThumbs(){
-  const mk=(box,list,onDel)=>{box.innerHTML='';list.forEach((src,i)=>{const fg=document.createElement('figure');fg.innerHTML=`<img src="${src}" alt=""><button type="button" aria-label="Remover imagem">×</button>`;fg.querySelector('button').onclick=()=>{onDel(i);drawThumbs();render()};box.appendChild(fg)})};
+  const mk=(box,list,onDel)=>{box.innerHTML='';list.forEach((src,i)=>{const st=linkDe(src)?'ok':(estado[chave(src)]||'');const fg=document.createElement('figure');fg.className=st?'st-'+st:'';fg.innerHTML=`<img src="${src}" alt=""><button type="button" aria-label="Remover imagem">×</button>${st==='enviando'?'<i class="spin"></i>':st==='erro'?'<i class="bad" title="Não enviada">!</i>':st==='ok'?'<i class="okk" title="Enviada">✓</i>':''}`;fg.querySelector('button').onclick=()=>{onDel(i);drawThumbs();render();atualizarEntrega()};box.appendChild(fg)})};
   mk(document.getElementById('tLogo'),imgs.logo?[imgs.logo]:[],()=>{imgs.logo=null;refreshLogoColors(false)});
   mk(document.getElementById('tHero'),imgs.hero?[imgs.hero]:[],()=>imgs.hero=null);
   mk(document.getElementById('tGal'),imgs.gal,i=>imgs.gal.splice(i,1));
 }
 const bad=()=>toast('Não foi possível abrir essa imagem. Tente uma foto em JPG ou PNG.');
-document.getElementById('upLogo').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;try{imgs.logo=await readImg(fl,480,true);drawThumbs();render();refreshLogoColors(true)}catch(_){bad()}};
-document.getElementById('upHero').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;try{imgs.hero=await readImg(fl,1600,false);drawThumbs();render('#inicio')}catch(_){bad()}};
+document.getElementById('upLogo').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;try{imgs.logo=await readImg(fl,480,true);drawThumbs();render();refreshLogoColors(true);subirFoto(imgs.logo,'logo')}catch(_){bad()}};
+document.getElementById('upHero').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;try{imgs.hero=await readImg(fl,1600,false);drawThumbs();render('#inicio');subirFoto(imgs.hero,'foto')}catch(_){bad()}};
 document.getElementById('upGal').onchange=async e=>{
   const all=[...e.target.files];e.target.value='';
   const files=all.slice(0,6-imgs.gal.length);
   if(all.length>files.length)toast('A galeria aceita até 6 fotos. Remova alguma para adicionar outras.');
-  for(const fl of files){try{imgs.gal.push(await readImg(fl,1100,false))}catch(_){bad()}}
+  for(const fl of files){try{const g=await readImg(fl,1400,false);imgs.gal.push(g);subirFoto(g,'foto')}catch(_){bad()}}
   drawThumbs();render(imgs.gal.length>1?'#galeria':'#sobre');
 };
 
@@ -175,7 +230,7 @@ document.getElementById('wExample').onclick=()=>{welcome.close();example()};
 document.getElementById('bHelp').onclick=()=>welcome.showModal();
 document.getElementById('bClear').onclick=()=>{
   if(!confirm('Apagar tudo o que foi preenchido e começar de novo?'))return;
-  f.reset();imgs.logo=null;imgs.hero=null;imgs.gal=[];maxReached=0;drawThumbs();refreshLogoColors(false);syncSwatches();show(0);
+  f.reset();imgs.logo=null;imgs.hero=null;imgs.gal=[];for(const k in estado)delete estado[k];maxReached=0;drawThumbs();refreshLogoColors(false);syncSwatches();show(0);
 };
 
 /* ---------- baixar ---------- */
@@ -195,7 +250,7 @@ async function saveFile(name,data,okMsg){
 }
 function b64(dataUrl){return dataUrl.split(',')[1]}
 function readme(d){
-  const sq=buildSite(d,'sqs',imgs);const nome=d.nome.trim();
+  const sq=buildSite(d,'sqs',imgsComLinks());const nome=d.nome.trim();
   const fotos=[imgs.logo&&'- fotos/logo.png  ->  troque COLE-AQUI-URL-logo.png',imgs.hero&&'- fotos/foto-principal.jpg  ->  troque COLE-AQUI-URL-foto-principal.jpg',...imgs.gal.map((_,i)=>`- fotos/galeria-${i+1}.jpg  ->  troque COLE-AQUI-URL-galeria-${i+1}.jpg`)].filter(Boolean);
   const seg=(d.segmento||'').trim(),cid=(d.cidade||'').trim();
   const L=getLead();
@@ -204,7 +259,7 @@ Gerado pelo Seu Site Grátis (criador de sites)
 ${L?`Criado por: ${L.nome} | ${L.email} | ${maskTel(L.tel)}
 `:''}
 ARQUIVOS
-- ${slug(nome)}-squarespace.html  ->  código para colar no Squarespace
+- ${slug(nome)}-squarespace.html  ->  código pronto para colar no Squarespace (as fotos entram por link)
 - ${slug(nome)}-previa.html  ->  prévia completa, abre com dois cliques no navegador
 ${fotos.length?'- pasta fotos/  ->  imagens do site\n':''}
 COMO PUBLICAR NO SQUARESPACE
@@ -227,10 +282,10 @@ document.getElementById('bDownload').onclick=async()=>{
   const d=data();
   if(!d.nome.trim()){show(0);validate(0);return}
   const base=slug(d.nome);
-  if(!window.JSZip){await saveFile(base+'-squarespace.html',buildSite(d,'sqs',imgs),'Código para Squarespace salvo.');return}
+  if(!window.JSZip){await saveFile(base+'-squarespace.html',buildSite(d,'sqs',imgsComLinks()),'Código para Squarespace salvo.');return}
   try{
     const z=new JSZip();
-    z.file(base+'-squarespace.html',buildSite(d,'sqs',imgs));
+    z.file(base+'-squarespace.html',buildSite(d,'sqs',imgsComLinks()));
     z.file(base+'-previa.html',buildSite(d,'full',imgs));
     z.file('LEIA-ME.txt',readme(d));
     if(imgs.logo)z.file('fotos/logo.png',b64(imgs.logo),{base64:true});
@@ -240,16 +295,40 @@ document.getElementById('bDownload').onclick=async()=>{
     await saveFile(base+'.zip',blob,'Pronto! Seu site foi salvo como '+base+'.zip');
   }catch(e){openCode('sqs')}
 };
+/* copiar o código do site (com fotos) */
+const bCopySite=document.getElementById('bCopySite');
+bCopySite.onclick=async()=>{
+  const d=data();if(!d.nome.trim()){show(0);validate(0);return}
+  const pend=fotosPendentes();
+  if(pend.some(x=>estado[chave(x)]==='enviando')){toast('Aguarde um instante: ainda estamos enviando suas fotos.');return}
+  if(pend.length){subirTodas();toast('Algumas fotos não foram enviadas. Tentando de novo, toque em copiar em seguida.');return}
+  const code=buildSite(d,'sqs',imgsComLinks());
+  if(await copy(code)){
+    const sp=bCopySite.querySelector('span');bCopySite.classList.add('ok');sp.textContent='Código copiado!';
+    toast('Agora cole no bloco de Código do Squarespace (ou numa mensagem para a equipe).');
+    setTimeout(()=>{bCopySite.classList.remove('ok');sp.textContent='Copiar código do site'},3500);
+  }else openCode('sqs');
+};
+/* enviar/salvar o arquivo pelo menu do celular */
+const bShare=document.getElementById('bShare');
+try{if(navigator.canShare&&navigator.canShare({files:[new File(['x'],'t.html',{type:'text/html'})]}))bShare.hidden=false}catch(e){}
+bShare.onclick=async()=>{
+  const d=data();if(!d.nome.trim()){show(0);validate(0);return}
+  const file=new File([buildSite(d,'sqs',imgsComLinks())],slug(d.nome)+'-site.html',{type:'text/html'});
+  try{await navigator.share({files:[file],title:'Site '+d.nome.trim()})}catch(e){if(e&&e.name!=='AbortError')openCode('sqs')}
+};
+if(/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|TikTok|musical_ly/i.test(navigator.userAgent))document.getElementById('inappTip').hidden=false;
+
 document.getElementById('bPreview').onclick=async()=>{
   const d=data();if(!d.nome.trim()){show(0);validate(0);return}
   await saveFile(slug(d.nome)+'-previa.html',buildSite(d,'full',imgs),'Prévia salva. Dê dois cliques no arquivo para abrir.');
 };
 const dlg=document.getElementById('dlg');let codeMode='sqs';
-const hints={sqs:'Formato para colar no bloco de código do Squarespace. As imagens aparecem como COLE-AQUI-URL-...: troque pelas URLs das fotos enviadas ao Squarespace.',
-  full:'Documento HTML completo, com as fotos dentro do arquivo. Serve para visualizar no computador.'};
+const hints={sqs:'Pronto para colar no bloco de Código do Squarespace. As fotos entram por link.',
+  full:'Documento HTML completo, com as fotos dentro do arquivo. Serve só para visualizar no computador.'};
 function openCode(m){codeMode=m||codeMode;updateCode();if(!dlg.open)dlg.showModal()}
 function updateCode(){
-  document.getElementById('code').value=buildSite(data(),codeMode,imgs);
+  document.getElementById('code').value=buildSite(data(),codeMode,codeMode==='sqs'?imgsComLinks():imgs);
   document.getElementById('dlgHint').textContent=hints[codeMode];
   dlg.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===codeMode)));
 }
@@ -349,7 +428,7 @@ pForm.addEventListener('submit',async e=>{
 
 pago.addEventListener('click',e=>{if(e.target===pago)pago.close()});
 
-['bDownload','bPreview'].forEach(id=>{
+['bDownload','bPreview','bCopySite','bShare'].forEach(id=>{
   const el=document.getElementById(id);
   if(!el)return;
   const original=el.onclick;
@@ -398,7 +477,7 @@ function maskTel(v){const d=digits(v).replace(/^55(?=\d{10,11}$)/,'').slice(0,11
 function enviarLead(l){
   if(!CONFIG.leadWebhook)return;
   const body=JSON.stringify({data:{name:l.nome,email:l.email,phone:'55'+l.tel,ref:quemIndicou(),origem:location.href.slice(0,180)}});
-  try{fetch(CONFIG.leadWebhook,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body})}catch(e){}
+  try{fetch(CONFIG.leadWebhook,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body}).catch(()=>{})}catch(e){}
 }
 const gate=document.getElementById('gate'),gf=document.getElementById('gateForm'),appEl=document.querySelector('.app');
 gf.ltel.addEventListener('input',()=>{gf.ltel.value=maskTel(gf.ltel.value)});
@@ -420,7 +499,7 @@ gf.addEventListener('submit',e=>{
 });
 
 const had=load();
-drawThumbs();refreshLogoColors(false);syncSwatches();
+drawThumbs();refreshLogoColors(false);syncSwatches();if(location.protocol.startsWith('http'))subirTodas();
 show(had?cur:0);
 /* ---------- página inicial > cadastro > criador ---------- */
 const lp=document.getElementById('lp');

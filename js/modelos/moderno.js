@@ -1,5 +1,7 @@
 /* Modelo Moderno: Claro, cartões arredondados. Serviços, lojas, tecnologia. */
 MODELOS.moderno = {
+  // hero: 'full' = foto de fundo | 'split' = texto + foto ao lado
+  hero: 'split', bento: true, selo: true,
   nome: 'Moderno',
   // fontes do Google Fonts (parte depois de "css2?")
   fontes: 'family=Plus+Jakarta+Sans:wght@400;500;600;700;800',
@@ -24,7 +26,7 @@ MODELOS.moderno = {
 .t-moderno .ds-num span{font-size:13.5px;margin-top:6px}
 .t-moderno .ds-hero-media{position:relative}
 .t-moderno .ds-hero-media>img,.t-moderno .ds-hero-ph{width:100%;aspect-ratio:4/5;max-height:620px;object-fit:cover;border-radius:32px;box-shadow:0 48px 90px -36px rgba(15,20,25,.4)}
-.t-moderno .ds-hero-ph{background:linear-gradient(145deg,var(--p),color-mix(in srgb,var(--p) 50%,#0F1419));display:flex;align-items:center;justify-content:center;color:var(--pc);font-size:clamp(140px,18vw,260px);font-weight:800;letter-spacing:-.06em;overflow:hidden;line-height:1}
+.t-moderno .ds-hero-ph{background:linear-gradient(145deg,var(--p),var(--pd));display:flex;align-items:center;justify-content:center;color:var(--pc);font-size:clamp(140px,18vw,260px);font-weight:800;letter-spacing:-.06em;overflow:hidden;line-height:1}
 .t-moderno .ds-float{position:absolute;left:-32px;bottom:40px;background:#fff;border-radius:18px;padding:15px 20px 15px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 24px 48px -18px rgba(15,20,25,.35);font-size:14px;color:var(--ink);line-height:1.35}
 .t-moderno .ds-float b{display:block;font-weight:700}.t-moderno .ds-float small{color:var(--muted);font-size:12.5px}
 .t-moderno .ds-live{width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 5px rgba(34,197,94,.2);flex-shrink:0}
@@ -48,7 +50,7 @@ MODELOS.moderno = {
 .t-moderno .ds-q{background:#fff;border:1px solid var(--line)}
 .t-moderno .ds-stars{display:block}
 .t-moderno .ds-cta{padding:clamp(24px,4vw,48px) 0 clamp(76px,10vw,120px)}
-.t-moderno .ds-cta-panel{background:linear-gradient(135deg,var(--p),color-mix(in srgb,var(--p) 58%,#0F1419));color:var(--pc);border-radius:36px;padding:clamp(56px,8vw,104px) clamp(28px,5vw,72px)}
+.t-moderno .ds-cta-panel{background:linear-gradient(135deg,var(--p),var(--pd));color:var(--pc);border-radius:36px;padding:clamp(56px,8vw,104px) clamp(28px,5vw,72px)}
 .t-moderno .ds-cta-panel::after{content:"";position:absolute;width:560px;height:560px;right:-160px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 65%);z-index:0}
 .t-moderno .ds-cta h2{font-weight:800}
 .t-moderno .ds-cta .ds-btn{background:var(--pc);color:var(--p)!important;border-color:var(--pc)}
@@ -56,5 +58,5 @@ MODELOS.moderno = {
 .t-moderno .ds-ci{background:var(--soft)}
 .t-moderno .ds-foot{border-top:1px solid var(--line);color:var(--muted)}
 .t-moderno .ds-foot .ds-brand{color:var(--ink);font-size:19px}
-@media (max-width:860px){.t-moderno .ds-hero-in{grid-template-columns:1fr}.t-moderno .ds-svcs{grid-template-columns:1fr}.t-moderno .ds-svc.s2,.t-moderno .ds-svc.s3{grid-column:auto}.t-moderno .ds-float{left:14px;bottom:18px}.t-moderno .ds-hero-media>img,.t-moderno .ds-hero-ph{aspect-ratio:4/4.2}.t-moderno .ds-hero-nums{gap:28px}}`
+@media (max-width:860px){.t-moderno .ds-svc{min-height:0;flex-direction:row;gap:16px;align-items:center;padding:22px}.t-moderno .ds-svc-ic{margin:0;flex-shrink:0;width:44px;height:44px}.t-moderno .ds-svc h3,.t-moderno .ds-svc.feat h3{margin-top:2px;font-size:19px}.t-moderno .ds-hero-in{grid-template-columns:1fr}.t-moderno .ds-svcs{grid-template-columns:1fr}.t-moderno .ds-svc.s2,.t-moderno .ds-svc.s3{grid-column:auto}.t-moderno .ds-float{left:14px;bottom:18px}.t-moderno .ds-hero-media>img,.t-moderno .ds-hero-ph{aspect-ratio:4/4.2}.t-moderno .ds-hero-nums{gap:28px}}`
 };

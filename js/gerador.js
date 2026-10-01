@@ -54,6 +54,12 @@ const BASE_CSS=`
 .ds-about-media{position:relative;isolation:isolate}
 .ds-about-media img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--r)}
 .ds-svc-ic{display:none}
+.ds-hero-media{position:relative;isolation:isolate}
+.ds-hero-media>img,.ds-hero-ph{width:100%;display:block;object-fit:cover}
+.ds-hero-ph{display:flex;align-items:center;justify-content:center;background:var(--p);color:var(--pc);font-family:var(--fh);font-size:clamp(120px,16vw,240px);line-height:1;aspect-ratio:4/5;overflow:hidden}
+.ds-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0}
+.ds-hero-nums{display:flex;flex-wrap:wrap;gap:36px;margin-top:44px}
+.ds-float{display:none}
 .ds-gal{display:grid;grid-template-columns:repeat(var(--gc,4),1fr);grid-auto-rows:clamp(150px,18vw,250px);gap:12px}
 .ds-gal img{width:100%;height:100%;object-fit:cover;border-radius:var(--r)}
 .ds-gal.big img:first-child{grid-column:span 2;grid-row:span 2}
@@ -96,6 +102,18 @@ const BASE_CSS=`
  .ds-about.has-img{grid-template-columns:1fr}
  .ds-gal{grid-template-columns:1fr 1fr!important}.ds-gal.g1{grid-template-columns:1fr!important}
  .ds-wrap{padding:0 22px}
+ .ds-site .ds-nums-in,.ds-site .ds-hero-nums{display:grid!important;grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none!important;gap:10px}
+ .ds-site .ds-num{min-width:0!important}
+ .ds-site .ds-num strong{font-size:clamp(20px,5.8vw,28px)!important;letter-spacing:-.02em}
+ .ds-site .ds-num span{font-size:11.5px!important;letter-spacing:.01em!important;line-height:1.3}
+ .ds-sec{padding:64px 0}
+ .ds-wa{width:54px;height:54px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ .ds-wa svg{width:28px;height:28px}
+}
+@media (max-width:600px){
+ .ds-ctas{flex-direction:column;align-items:stretch}
+ .ds-ctas .ds-btn{width:100%}
+ .ds-hero h1{overflow-wrap:break-word}
 }
 @media (prefers-reduced-motion:reduce){.ds-site *,.ds-site *::before{animation:none!important;transition:none!important}}`;
 
@@ -110,8 +128,9 @@ const IC={
   check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
 };
 function buildSite(d,mode,imgs){
-  const SQ=mode==='sqs';
-  const I=SQ?{logo:imgs.logo?'COLE-AQUI-URL-logo.png':null,hero:imgs.hero?'COLE-AQUI-URL-foto-principal.jpg':null,gal:imgs.gal.map((_,i)=>'COLE-AQUI-URL-galeria-'+(i+1)+'.jpg')}:imgs;
+  const SQ=mode==='sqs'||mode==='sqsfotos';
+  const U=imgs.urls||{};
+  const I=mode==='sqs'?{logo:imgs.logo?(U.logo||'COLE-AQUI-URL-logo.png'):null,hero:imgs.hero?(U.hero||'COLE-AQUI-URL-foto-principal.jpg'):null,gal:imgs.gal.map((_,i)=>(U.gal&&U.gal[i])||'COLE-AQUI-URL-galeria-'+(i+1)+'.jpg')}:imgs;
   let t=d.template==='classico'?'elegante':d.template;
   if(!MODELOS[t])t='moderno';
   const P=/^#[0-9a-f]{6}$/i.test(d.cor)?d.cor:'#1F5EFF';
@@ -119,7 +138,7 @@ function buildSite(d,mode,imgs){
   const nome=(d.nome||'').trim()||'Nome da empresa';
   const wa=waLink(d.whatsapp,d.nome);
   const svcs=splitLines(d.servicos);
-  const nums=splitLines(d.numeros).slice(0,4);
+  const nums=splitLines(d.numeros).slice(0,4).map(separarNumero);
   const quotes=splitLines(d.depoimentos).slice(0,6);
   const about=(d.sobre||'').trim().split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
   const hors=(d.horarios||'').split('\n').map(l=>l.trim()).filter(Boolean);
@@ -132,7 +151,7 @@ function buildSite(d,mode,imgs){
   const aboutImg=I.gal[0]||null;
   const gal=I.gal.slice(1);
   const hasContact=wa||tel||email||ig||d.endereco||hors.length;
-  const isImp=t==='impacto';
+  const M=MODELOS[t];const isImp=!!M.impacto;const split=M.hero==='split';
   const headline=(!isImp&&d.slogan)?d.slogan.trim():nome;
   const kicker=isImp?segLine:(d.slogan?[nome,segLine].filter(Boolean).join(', '):segLine);
   const lead=(d.apoio||'').trim()||(isImp?(d.slogan||'').trim():'');
@@ -159,18 +178,18 @@ function buildSite(d,mode,imgs){
   else if(hasContact)ctas.push(`<a class="ds-btn" href="#contato">Entrar em contato</a>`);
   if(svcs.length)ctas.push(`<a class="ds-btn ds-btn-o" href="#servicos">Ver ${esc(svcTitle.replace(/^(nossos|nossas)\s+/i,'').toLowerCase())}</a>`);
   h+=`<section class="ds-hero ${heroImg?'has-img':'no-img'}" id="inicio">`;
-  if(t!=='moderno'&&heroImg)h+=`<div class="ds-hero-bg"><img src="${heroImg}" alt=""></div>`;
+  if(!split&&heroImg)h+=`<div class="ds-hero-bg"><img src="${heroImg}" alt=""></div>`;
   if(isImp&&!heroImg)h+=`<div class="ds-ghost" aria-hidden="true">${esc(nome)}</div>`;
   h+=`<div class="ds-wrap ds-hero-in"><div class="ds-hero-txt">`;
-  if(kicker)h+=`<p class="ds-kicker">${t==='moderno'?'<span class="ds-dot"></span>':''}${esc(kicker)}</p>`;
+  if(kicker)h+=`<p class="ds-kicker">${split?'<span class="ds-dot"></span>':''}${esc(kicker)}</p>`;
   h+=`<h1>${esc(headline)}</h1>`;
   if(lead)h+=`<p class="ds-lead">${esc(lead)}</p>`;
   if(ctas.length)h+=`<div class="ds-ctas">${ctas.join('')}</div>`;
-  if(t==='moderno'&&nums.length)h+=`<div class="ds-hero-nums">${nums.map(n=>`<div class="ds-num"><strong>${esc(n.a)}</strong><span>${esc(n.b)}</span></div>`).join('')}</div>`;
+  if(split&&nums.length)h+=`<div class="ds-hero-nums">${nums.map(n=>`<div class="ds-num"><strong>${esc(n.a)}</strong><span>${esc(n.b)}</span></div>`).join('')}</div>`;
   h+=`</div>`;
-  if(t==='moderno'){
+  if(split){
     h+=`<div class="ds-hero-media">${heroImg?`<img src="${heroImg}" alt="${esc(nome)}">`:`<div class="ds-hero-ph" aria-hidden="true">${esc(nome.charAt(0).toUpperCase())}</div>`}`;
-    if(wa)h+=`<div class="ds-float"><span class="ds-live"></span><div><b>Atendimento pelo WhatsApp</b><small>Resposta rápida em horário comercial</small></div></div>`;
+    if(wa&&M.selo)h+=`<div class="ds-float"><span class="ds-live"></span><div><b>Atendimento pelo WhatsApp</b><small>Resposta rápida em horário comercial</small></div></div>`;
     h+=`</div>`;
   }
   h+=`</div></section>`;
@@ -179,7 +198,7 @@ function buildSite(d,mode,imgs){
   if(isImp&&svcs.length){const items=svcs.map(s=>`<span>${esc(s.a)}</span>`).join('');let rep=items;while(rep.split('<span>').length-1<8)rep+=items;h+=`<div class="ds-marq" aria-hidden="true"><div class="ds-marq-in">${rep}${rep}</div></div>`}
 
   /* números */
-  if(t!=='moderno'&&nums.length)h+=`<section class="ds-nums"><div class="ds-wrap"><div class="ds-nums-in">${nums.map(n=>`<div class="ds-num"><strong>${esc(n.a)}</strong><span>${esc(n.b)}</span></div>`).join('')}</div></div></section>`;
+  if(!split&&nums.length)h+=`<section class="ds-nums"><div class="ds-wrap"><div class="ds-nums-in">${nums.map(n=>`<div class="ds-num"><strong>${esc(n.a)}</strong><span>${esc(n.b)}</span></div>`).join('')}</div></div></section>`;
 
   /* sobre */
   if(about.length){
@@ -191,9 +210,9 @@ function buildSite(d,mode,imgs){
   /* serviços */
   if(svcs.length){
     const n=svcs.length;
-    const span=i=>{if(t!=='moderno')return'';if(n===1)return' s3';if(n%3===2&&i===0)return' s2';if(n%3===1&&(i===0||i===n-1))return' s2';return''};
+    const span=i=>{if(!M.bento)return'';if(n===1)return' s3';if(n%3===2&&i===0)return' s2';if(n%3===1&&(i===0||i===n-1))return' s2';return''};
     h+=`<section class="ds-sec ds-svc-sec" id="servicos"><div class="ds-wrap"><div class="ds-head"><h2 class="ds-h2">${esc(svcTitle)}</h2></div><div class="ds-svcs">`;
-    h+=svcs.map((s,i)=>`<article class="ds-svc${span(i)}${t==='moderno'&&i===0&&n>1?' feat':''}"><span class="ds-svc-ic">${IC.check}</span><div><h3>${esc(s.a)}</h3>${s.b?`<p>${esc(s.b)}</p>`:''}</div></article>`).join('');
+    h+=svcs.map((s,i)=>`<article class="ds-svc${span(i)}${M.bento&&i===0&&n>1?' feat':''}"><span class="ds-svc-ic">${IC.check}</span><div><h3>${esc(s.a)}</h3>${s.b?`<p>${esc(s.b)}</p>`:''}</div></article>`).join('');
     h+=`</div></div></section>`;
   }
 
@@ -224,7 +243,8 @@ function buildSite(d,mode,imgs){
   h+=`<footer class="ds-foot"><div class="ds-wrap ds-foot-in"><span class="ds-brand">${esc(nome)}</span><span>© ${new Date().getFullYear()} ${esc(nome)}. Todos os direitos reservados.${d.credito?' Site por DK Marketing Digital.':''}</span></div></footer>`;
   if(wa)h+=`<a class="ds-wa" href="${wa}"${ext} aria-label="Falar no WhatsApp">${WA_SVG}</a>`;
 
-  const css=`.ds-site{--p:${P};--pc:${contrast(P)};--pl:${PL};${MODELOS[t].vars}}`+BASE_CSS+MODELOS[t].css;
+  const PD=lum(P)>.4?`color-mix(in srgb,${P} 88%,#FFFFFF)`:`color-mix(in srgb,${P} 58%,#0F1419)`;
+  const css=`.ds-site{--p:${P};--pc:${contrast(P)};--pl:${PL};--pd:${PD};${MODELOS[t].vars}}`+BASE_CSS+MODELOS[t].css;
   const fontLink=`<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?${MODELOS[t].fontes}&display=swap" rel="stylesheet">`;
   const js=`<script>(function(){var r=document.querySelectorAll('.ds-site');r=r[r.length-1];if(!r)return;var h=r.querySelector('.ds-top');if(!h)return;function f(){h.classList.toggle('ds-solid',window.scrollY>30)}f();window.addEventListener('scroll',f,{passive:true});r.querySelectorAll('.ds-mnav a').forEach(function(a){a.addEventListener('click',function(){h.classList.remove('ds-open')})})})();<\/script>`;
   const body=`<div class="ds-site t-${t}">${h}</div>`;
@@ -237,19 +257,21 @@ html{scroll-behavior:smooth;scroll-padding-top:90px}
 #header,#footer-sections,.header-announcement-bar-wrapper,.Header,.Footer{display:none!important}
 .page-section,.content-wrapper,.content,#page,main{padding:0!important;margin:0!important;max-width:none!important;min-height:0!important}
 .sqs-block-code,.sqs-block-code .sqs-block-content,.fluid-engine{padding:0!important;margin:0!important}
-.ds-full{width:100vw;margin-left:calc(50% - 50vw);overflow-x:clip;background:${isImp?'#0D0E10':'#FFFFFF'}}
+.ds-full{width:100vw;margin-left:calc(50% - 50vw);overflow-x:clip;background:${M.fundo||'#FFFFFF'}}
 .ds-site{color-scheme:light}
 .ds-site h1,.ds-site h2,.ds-site h3,.ds-site p,.ds-site blockquote,.ds-site figure,.ds-site dl,.ds-site dd{margin:0}
 .ds-site h1,.ds-site h2,.ds-site h3{text-transform:none;font-style:normal}
 .ds-site.t-impacto h1,.ds-site.t-impacto h2,.ds-site.t-impacto h3,.ds-site.t-impacto .ds-brand{text-transform:uppercase}`;
-    const imgList=[I.logo&&'  - COLE-AQUI-URL-logo.png  -> fotos/logo.png',I.hero&&'  - COLE-AQUI-URL-foto-principal.jpg  -> fotos/foto-principal.jpg',...I.gal.map((_,i)=>`  - COLE-AQUI-URL-galeria-${i+1}.jpg  -> fotos/galeria-${i+1}.jpg`)].filter(Boolean);
+    const imgList=[I.logo&&I.logo.startsWith('COLE')&&'  - COLE-AQUI-URL-logo.png  -> fotos/logo.png',I.hero&&I.hero.startsWith('COLE')&&'  - COLE-AQUI-URL-foto-principal.jpg  -> fotos/foto-principal.jpg',...I.gal.map((g,i)=>g.startsWith('COLE')&&`  - COLE-AQUI-URL-galeria-${i+1}.jpg  -> fotos/galeria-${i+1}.jpg`)].filter(Boolean);
+    const comLink=[I.logo,I.hero,...I.gal].some(x=>x&&/^https?:/.test(x));
     const note=`<!--
   ${nome.replace(/--/g,'-')} — pronto para Code Block do Squarespace
   Como usar: Página em branco > Adicionar bloco > Código > desligar "Exibir fonte" > colar TUDO isto.
-  Antes de publicar:${imgList.length?`
+  Antes de publicar:${mode==='sqsfotos'?`
+  (1) as fotos já estão dentro deste código, não precisa trocar nada.`:imgList.length?`
   (1) trocar cada COLE-AQUI-URL-... pela URL da imagem enviada ao Squarespace:
 ${imgList.join('\n')}`:`
-  (1) este site não usa imagens enviadas.`}
+  (1) ${comLink?'as fotos já estão com link, não precisa trocar nada.':'este site não usa imagens enviadas.'}`}
   (2) título/descrição da página: Configurações da página > SEO.
       Título sugerido: ${title.replace(/--/g,'-')}
       Descrição sugerida: ${desc.replace(/--/g,'-')}
@@ -268,7 +290,7 @@ ${imgList.join('\n')}`:`
 <meta name="theme-color" content="${P}">
 ${I.logo?`<link rel="icon" href="${I.logo}">`:''}
 ${fontLink}
-<style>html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:${isImp?'#0D0E10':'#FFFFFF'}}${css}</style>
+<style>html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:${M.fundo||'#FFFFFF'}}${css}</style>
 </head>
 <body>
 ${body}

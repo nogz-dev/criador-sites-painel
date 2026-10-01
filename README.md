@@ -3,7 +3,14 @@
 Ferramenta em que o cliente preenche os dados da empresa em 5 passos, escolhe um modelo
 e baixa um pacote `.zip` com o site pronto para o **Code Block do Squarespace**.
 
-Não tem instalação nem build: são arquivos estáticos publicados no **Railway**.
+Roda no **Railway** com um servidor pequeno em Python (`main.py`, FastAPI) que entrega a ferramenta
+e recebe as fotos do cliente, devolvendo um **link público** para cada uma
+(o Squarespace só mostra imagem por link).
+
+### Configuração no Railway
+- **Volume** montado em `/data` (as fotos ficam em `/data/fotos`). Sem Volume, as fotos somem a cada deploy.
+- Variável `PUBLIC_URL` = `https://app.seusitegratis.com` (endereço usado nos links das fotos).
+- Início e verificação de saúde já estão no `railway.toml` (`/saude` mostra se as fotos estão num lugar persistente).
 
 ## Estrutura
 
@@ -15,6 +22,9 @@ js/modelos/registro.js    Lista de modelos (MODELOS)
 js/modelos/elegante.js     Modelo Elegante
 js/modelos/moderno.js      Modelo Moderno
 js/modelos/impacto.js      Modelo Impacto
+js/modelos/aconchego.js    Modelo Aconchego
+js/modelos/minimal.js      Modelo Minimalista
+js/modelos/vibrante.js     Modelo Vibrante
 js/gerador.js              Monta o HTML do site (estrutura comum + formato Squarespace)
 js/app.js                  Interface: passos, fotos, cores da logo, rascunho, download
 ```
@@ -29,7 +39,7 @@ js/app.js                  Interface: passos, fotos, cores da logo, rascunho, do
 ## Modelo novo
 
 1. Copie `js/modelos/moderno.js` para `js/modelos/novo.js` e troque `MODELOS.moderno` por `MODELOS.novo`.
-2. Ajuste `fontes`, `vars` e `css` (as regras do modelo começam com `.t-novo`).
+2. Ajuste `hero` ('full' = foto de fundo, 'split' = texto + foto ao lado), `fontes`, `vars` e `css` (as regras do modelo começam com `.t-novo`).
 3. Inclua `<script src="js/modelos/novo.js"></script>` no `index.html`, antes de `gerador.js`.
 4. Adicione o cartão do modelo no passo "Estilo" do `index.html` (`value="novo"`).
 
@@ -40,10 +50,9 @@ js/app.js                  Interface: passos, fotos, cores da logo, rascunho, do
 - `fotos/` — imagens com os mesmos nomes dos marcadores `COLE-AQUI-URL-...`
 - `LEIA-ME.txt` — passo a passo de publicação no Squarespace
 
-## Publicação (Railway)
+## Publicação
 
-O projeto está no Railway, servindo os arquivos estáticos em `app.seusitegratis.com`.
-Cada commit na `main` publica sozinho, em 1 a 2 minutos.
+Cada commit na `main` do repositório ligado ao serviço do Railway publica a nova versão em 1 a 2 minutos.
 
 ## Contatos de quem entra
 

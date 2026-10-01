@@ -7,7 +7,13 @@
 <meta name="description" content="Seu site pronto em menos de 30 minutos, de graça. Preencha, escolha um modelo e baixe o site da sua empresa.">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="180x180" href="img/favicon.png">
-<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Seu Site">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700;800&family=Wix+Madefor+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -139,8 +145,8 @@
   <header class="bar">
     <button class="logo logo-btn" type="button" id="bHome" title="Voltar ao início"><img src="img/logo.png" alt="Seu Site Grátis" width="720" height="238"><small>Criador de sites</small></button>
     <div class="bar-actions">
-      <button class="lnk" id="bHelp" type="button">Como funciona</button>
-      <button class="lnk" id="bClear" type="button">Recomeçar</button>
+      <button class="lnk ic" id="bHelp" type="button" aria-label="Como funciona"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4"/><circle cx="12" cy="16.9" r=".5"/></svg><span>Como funciona</span></button>
+      <button class="lnk ic" id="bClear" type="button" aria-label="Recomeçar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg><span>Recomeçar</span></button>
     </div>
   </header>
   <div class="main">
@@ -193,7 +199,7 @@
           <p class="intro">Fotos reais da sua empresa, da equipe ou dos seus produtos deixam o site muito mais bonito e confiável. Pode enviar direto do celular.</p>
           <div class="upbox">
             <div class="lbl">Logo</div>
-            <p class="hint">De preferência em PNG com fundo transparente. Vamos usar as cores dela para sugerir a cor do site.</p>
+            <p class="hint">De preferência em PNG com fundo transparente. Vamos usar as cores dela para sugerir a cor do site. Cada foto é enviada na hora e ganha um link para funcionar no Squarespace.</p>
             <label class="upbtn" for="upLogo">Escolher logo</label><input type="file" id="upLogo" accept="image/*">
             <div class="thumbs" id="tLogo"></div>
           </div>
@@ -215,10 +221,18 @@
           <h2>Estilo do site</h2>
           <p class="intro">Escolha o modelo que mais combina com o seu negócio e a cor principal. Você vê o resultado na hora, na prévia.</p>
           <div class="lbl">Modelo</div>
+          <p class="hint" id="tplHint" style="margin:-2px 0 12px" hidden></p>
           <div class="tpls">
-            <label class="tpl"><input type="radio" name="template" value="elegante"><div class="thumb th-e"><s></s><s></s></div><div><b>Elegante</b><small>Foto em tela cheia e letras refinadas. Ideal para clínicas, estética e escritórios.</small></div></label>
-            <label class="tpl"><input type="radio" name="template" value="moderno" checked><div class="thumb th-m"><span><s></s><s></s></span><u></u></div><div><b>Moderno</b><small>Claro, com cartões arredondados. Ideal para serviços, lojas e tecnologia.</small></div></label>
-            <label class="tpl"><input type="radio" name="template" value="impacto"><div class="thumb th-i"><s></s><s></s></div><div><b>Impacto</b><small>Fundo escuro e letras gigantes. Ideal para academias, barbearias e eventos.</small></div></label>
+            <label class="tpl" data-k="advog juridic escritorio clinic estetic odonto dent psicolog nutri imobil corretor contab"><input type="radio" name="template" value="elegante"><div class="thumb th-e"><s></s><s></s></div><div><b>Elegante</b><small>Foto em tela cheia e letras refinadas. Ideal para clínicas, estética e escritórios.</small></div></label>
+            <label class="tpl" data-k="servic tecnolog loja consult contab marketing agenc eletric manutenc limpez assistenc reform construc"><input type="radio" name="template" value="moderno" checked><div class="thumb th-m"><span><s></s><s></s></span><u></u></div><div><b>Moderno</b><small>Claro, com cartões arredondados. Ideal para serviços, lojas e tecnologia.</small></div></label>
+            <label class="tpl" data-k="academ barbear crossfit luta esport personal tatu event festa bar box"><input type="radio" name="template" value="impacto"><div class="thumb th-i"><s></s><s></s></div><div><b>Impacto</b><small>Fundo escuro e letras gigantes. Ideal para academias, barbearias e eventos.</small></div></label>
+            <label class="tpl" data-k="cafe cafeteria restaur padar confeit doce bolo pet veterin pousada hotel flor artesan comida"><input type="radio" name="template" value="aconchego"><div class="thumb th-a"><span><s></s><s></s></span><u></u></div><div><b>Aconchego</b><small>Tons quentes e formas arredondadas. Ideal para cafés, restaurantes, confeitarias e pet shops.</small></div></label>
+            <label class="tpl" data-k="arquit fotograf design consult advog interior movei galeria arte engenh"><input type="radio" name="template" value="minimal"><div class="thumb th-n"><s></s><s></s><u></u></div><div><b>Minimalista</b><small>Editorial, com muito espaço em branco. Ideal para arquitetos, fotógrafos e consultores.</small></div></label>
+            <label class="tpl" data-k="estetic salao beleza manicure unha festa buffet escola infantil brinqued loja moda cabel"><input type="radio" name="template" value="vibrante"><div class="thumb th-v"><span><s></s><s></s></span><u></u></div><div><b>Vibrante</b><small>A cor da sua marca em destaque, clima alegre. Ideal para estética, festas, lojas e escolas.</small></div></label>
+            <label class="tpl" data-k="clinic medic odonto dent fisio psicolog nutri saude laborat farmac terapia veterin pilates fono"><input type="radio" name="template" value="saude"><div class="thumb th-s"><s></s><s></s><u></u></div><div><b>Saúde</b><small>Claro, acolhedor e centralizado. Ideal para clínicas, consultórios, fisioterapia e nutrição.</small></div></label>
+            <label class="tpl" data-k="joal estetic spa harmoniz cirurg imobil noiva casament premium perfum hotel alto padrao"><input type="radio" name="template" value="luxo"><div class="thumb th-l"><s></s><s></s></div><div><b>Luxo</b><small>Escuro e sofisticado, com letras clássicas. Ideal para estética premium, joalherias e imóveis.</small></div></label>
+            <label class="tpl" data-k="tecnolog software informat startup agenc marketing digital celular assistenc games automac solar internet"><input type="radio" name="template" value="tech"><div class="thumb th-t"><span><s></s><s></s></span><u></u></div><div><b>Tecnológico</b><small>Escuro com brilho e efeito de vidro. Ideal para tecnologia, agências e energia solar.</small></div></label>
+            <label class="tpl" data-k="lanche lanchonete hamburg pizza acai sorvet cervej loja brecho moda skate tatu estudio podcast food"><input type="radio" name="template" value="neo"><div class="thumb th-o"><span><s></s><s></s></span><u></u></div><div><b>Neo</b><small>Bordas grossas e muita personalidade. Ideal para lanchonetes, lojas jovens e estúdios.</small></div></label>
           </div>
           <div class="lbl">Cor principal</div>
           <div class="hint" style="margin:0 0 10px">Use a cor mais forte da sua logo. Ela aparece nos botões e destaques.</div>
@@ -232,35 +246,49 @@
 
         <section class="step" data-step="5">
           <h2>Seu site está pronto</h2>
-          <p class="intro">Baixe o arquivo do seu site. Se quiser deixar ele ainda mais completo antes, veja a conferência abaixo: itens em cinza são opcionais e você pode voltar e adicionar.</p>
-          <button class="big" type="button" id="bDownload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>Baixar meu site (.zip)</button>
-          <button class="ghost" type="button" id="bPreview">Baixar só a prévia para abrir no computador</button>
+          <p class="intro">Copie o código ou baixe os arquivos do seu site. Quer deixar ele mais completo antes? Veja a conferência no fim da página.</p>
+          <div class="dl-opt dl-main">
+            <span class="tag req">Mais fácil</span>
+            <h3>Copiar o código do site</h3>
+            <p>Textos, cores e fotos já no formato do Squarespace: as fotos vão como link, prontas para aparecer. É só colar no bloco de Código.</p>
+            <p class="fstat" id="fotosStatus" hidden></p>
+            <button class="big" type="button" id="bCopySite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg><span>Copiar código do site</span></button>
+          </div>
+          <div class="dl-opt">
+            <h3>Baixar os arquivos</h3>
+            <p>Pacote .zip com o código, as fotos separadas e as instruções.</p>
+            <button class="ghost" type="button" id="bDownload">Baixar pacote (.zip)</button>
+            <button class="ghost" type="button" id="bShare" hidden>Enviar ou salvar o arquivo do site</button>
+            <button class="ghost" type="button" id="bPreview">Baixar só a prévia para abrir no computador</button>
+          </div>
+          <p class="tip" id="inappTip" hidden><strong>Os botões não funcionaram?</strong>Você abriu o site por dentro do Instagram, Facebook ou WhatsApp, e eles bloqueiam downloads. Toque nos três pontinhos e escolha "Abrir no navegador" (Safari ou Chrome).</p>
           <div class="sub" style="margin-top:26px;font-size:14px;color:var(--ink)">Conferência</div>
           <ul class="check" id="check"></ul>
           <div class="how">
             <h3>E agora?</h3>
             <ol>
-              <li><b>Baixe o pacote do site.</b> É um arquivo .zip com o nome da sua empresa. Dentro dele vão o site, as suas fotos e as instruções de publicação.</li>
+              <li><b>Copie o código ou baixe o pacote.</b> O código já leva suas fotos e textos. O pacote .zip traz tudo em arquivos separados, com as instruções.</li>
               <li><b>Se quiser, confira antes.</b> Abra o arquivo que termina em "-previa.html" e o site aparece no navegador do jeito que vai ficar no ar.</li>
-              <li><b>Envie o .zip para a equipe responsável.</b> Não precisa abrir nem mexer em nada. A equipe coloca o site no ar com o endereço da sua empresa.</li>
+              <li><b>Envie para a equipe responsável.</b> Cole o código numa mensagem ou mande o arquivo. Não precisa abrir nem mexer em nada. A equipe coloca o site no ar com o endereço da sua empresa.</li>
             </ol>
           </div>
         </section>
       </form>
       <div class="foot">
-        <button class="back" type="button" id="bBack">Voltar</button>
-        <button class="pv-open" type="button" id="bPv">Prévia</button>
+        <button class="back" type="button" id="bBack" aria-label="Voltar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Voltar</span></button>
+        <button class="pv-open" type="button" id="bPv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Prévia</span></button>
         <button class="next" type="button" id="bNext">Próximo</button>
       </div>
     </div>
     <section class="prev" aria-label="Prévia do site">
       <div class="prev-bar">
         <span><b>Prévia ao vivo.</b> Atualiza enquanto você digita.</span>
+        <span class="pv-title">Prévia do seu site</span>
         <div class="dev" role="group" aria-label="Tamanho da prévia">
           <button type="button" data-d="desk" aria-pressed="true">Computador</button>
           <button type="button" data-d="mobile" aria-pressed="false">Celular</button>
         </div>
-        <button class="pv-close" type="button" id="bPvClose">Voltar ao formulário</button>
+        <button class="pv-close" type="button" id="bPvClose" aria-label="Fechar prévia"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <div class="stage" id="stage"><div class="browser"><div class="bbar"><i></i><i></i><i></i><span id="urlPill">seusite.com.br</span></div><iframe id="frame" title="Prévia do site"></iframe></div></div>
     </section>
@@ -274,7 +302,7 @@
       <h1>O site da sua empresa, pronto em poucos minutos.</h1>
       <p>Preencha as informações do seu negócio, escolha um modelo e baixe o site pronto para publicar.</p>
       <ul>
-        <li>3 modelos modernos para escolher</li>
+        <li>10 modelos modernos para escolher</li>
         <li>Prévia ao vivo enquanto você preenche</li>
         <li>Botão de WhatsApp e mapa já incluídos</li>
       </ul>
@@ -335,7 +363,7 @@
   <div class="dlg-h"><h3>Código do site</h3><button class="x" type="button" id="dlgClose" aria-label="Fechar">×</button></div>
   <div class="dlg-b">
     <div class="seg" role="group">
-      <button type="button" data-m="sqs" aria-pressed="true">Squarespace (bloco de código)</button>
+      <button type="button" data-m="sqs" aria-pressed="true">Squarespace</button>
       <button type="button" data-m="full" aria-pressed="false">Arquivo completo</button>
     </div>
     <p id="dlgHint"></p>
@@ -352,6 +380,13 @@
 <script src="js/modelos/elegante.js"></script>
 <script src="js/modelos/moderno.js"></script>
 <script src="js/modelos/impacto.js"></script>
+<script src="js/modelos/aconchego.js"></script>
+<script src="js/modelos/minimal.js"></script>
+<script src="js/modelos/vibrante.js"></script>
+<script src="js/modelos/saude.js"></script>
+<script src="js/modelos/luxo.js"></script>
+<script src="js/modelos/tech.js"></script>
+<script src="js/modelos/neo.js"></script>
 <script src="js/gerador.js"></script>
 <script src="js/app.js"></script>
 <script src="js/landing.js"></script>

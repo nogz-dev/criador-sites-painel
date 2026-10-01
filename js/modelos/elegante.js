@@ -1,5 +1,7 @@
 /* Modelo Elegante: Foto em tela cheia, serifa refinada. Clínicas, estética, escritórios. */
 MODELOS.elegante = {
+  // hero: 'full' = foto de fundo | 'split' = texto + foto ao lado
+  hero: 'full',
   nome: 'Elegante',
   // fontes do Google Fonts (parte depois de "css2?")
   fontes: 'family=Cormorant:wght@500;600;700&family=Jost:wght@300;400;500;600',
@@ -45,5 +47,5 @@ MODELOS.elegante = {
 .t-elegante .ds-ci{border-top:1px solid var(--line);border-radius:0;padding:28px 0 0}
 .t-elegante .ds-ci svg{stroke:var(--pl)}
 .t-elegante .ds-foot{background:#161513;color:#A39E95;border-top:1px solid #34312D}
-@media (max-width:860px){.t-elegante .ds-svc>div{grid-template-columns:1fr;gap:6px}.t-elegante .ds-num{padding:32px 0;border-left:0;border-top:1px solid var(--line)}.t-elegante .ds-num:first-child{border-top:0}.t-elegante .ds-about-media::before{inset:16px -12px -16px 12px}}`
+@media (max-width:860px){.t-elegante .ds-svc>div{grid-template-columns:1fr;gap:6px}.t-elegante .ds-num{padding:28px 10px}.t-elegante .ds-num:first-child{padding-left:0}.t-elegante .ds-about-media::before{inset:16px -12px -16px 12px}}`
 };
