@@ -408,6 +408,19 @@ pForm.addEventListener('submit',async e=>{
   pCampo.classList.toggle('bad',!valido);
   if(!valido){pForm.pemail.focus();return}
   pMsg('');pVerificar.disabled=true;pVerificar.textContent='Conferindo…';
+  /* e-mail da equipe: libera direto, sem depender da conta no Squarespace.
+     A lista fica só no servidor (variável EMAILS_EQUIPE), nunca aqui. */
+  try{
+    const q=await fetch('/api/equipe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const j=await q.json();
+    if(j&&j.liberado){
+      marcarLiberado(0);
+      pMsg('Acesso da equipe liberado. Pode baixar e copiar à vontade.','ok');
+      pVerificar.disabled=false;pVerificar.textContent='Liberar meu download';
+      setTimeout(()=>{if(pago.open)pago.close()},1200);
+      return;
+    }
+  }catch(e){}
   try{
     const r=await perguntarPainel(email);
     if(r&&r.liberado){

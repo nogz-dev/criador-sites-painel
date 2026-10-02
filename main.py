@@ -62,6 +62,36 @@ def _base_publica(req: Request) -> str:
     return f"{proto}://{host}"
 
 
+# ---------- acesso da equipe ----------
+# E-mails da equipe que liberam o download sem passar pela oferta. Ficam SÓ na
+# variável EMAILS_EQUIPE do Railway (separados por vírgula), nunca no código,
+# porque este repositório é público.
+_tentativas_equipe: dict = {}
+
+
+@app.post("/api/equipe")
+async def acesso_equipe(request: Request):
+    ip = _ip(request)
+    agora = time.time()
+    fila = [t for t in _tentativas_equipe.get(ip, []) if agora - t < 600]
+    if len(fila) >= 10:
+        return JSONResponse({"liberado": False, "espere": True}, status_code=429)
+    fila.append(agora)
+    _tentativas_equipe[ip] = fila
+    try:
+        email = str((await request.json()).get("email", "")).strip().lower()
+    except Exception:
+        email = ""
+    equipe = {e.strip().lower() for e in os.getenv("EMAILS_EQUIPE", "").split(",") if e.strip()}
+    ok = bool(email) and email in equipe
+    if ok:
+        log.info("[EQUIPE] download liberado para %s (ip %s)", email, ip)
+    return {"liberado": ok}
+
+
+@app.get("/saude/", include_in_schema=False)
+@app.get("/sa\u00fade", include_in_schema=False)
+@app.get("/health", include_in_schema=False)
 @app.get("/saude")
 def saude():
     return {"ok": True, "fotos_persistentes": PERSISTENTE}
